@@ -1,0 +1,29 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from routers.absences import router as absences_router
+from routers.ai_allocation import router as ai_allocation_router
+from routers.periods import router as periods_router
+from routers.timetable import router as timetable_router
+
+
+app = FastAPI(title="AI School Timetable Management System")
+
+# Keep CORS open for local React integration during development.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(periods_router)
+app.include_router(timetable_router)
+app.include_router(absences_router)
+app.include_router(ai_allocation_router)
+
+
+@app.get("/")
+def root():
+    return {"message": "AI School Timetable API is running"}

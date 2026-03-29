@@ -1,0 +1,11 @@
+INFO:     Started server process [15412]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+DEBUG: assigned_teacher_id: 'T04', type: <class 'str'>, eligible_ids: {'T09', 'T10', 'T04', 'T07'}
+INFO:     127.0.0.1:51119 - "POST /find-covering-teacher HTTP/1.1" 200 OK
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [15412]
+cess [14569]
