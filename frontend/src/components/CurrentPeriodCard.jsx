@@ -11,8 +11,12 @@ export default function CurrentPeriodCard({ onPeriodChange }) {
       try {
         const response = await api.get('/current-period');
         setData(response.data);
-        if (response.data.active_period && onPeriodChange) {
-          onPeriodChange(response.data.active_period);
+        const isActive = response.data.active_period !== null && response.data.active_period !== undefined;
+        if (onPeriodChange) {
+          onPeriodChange({
+            period: isActive ? response.data.active_period : 1,
+            isClosed: !isActive
+          });
         }
       } catch (error) {
         console.error("Error fetching current period:", error);

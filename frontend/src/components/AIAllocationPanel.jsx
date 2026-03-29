@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Bot, Sparkles, Check, AlertCircle, Loader2 } from 'lucide-react';
 import api from '../api';
 
-export default function AIAllocationPanel() {
+export default function AIAllocationPanel({ onAdjustmentCreated }) {
   const [formData, setFormData] = useState({
     day: 'Monday',
     date: new Date().toISOString().split('T')[0],
@@ -21,7 +21,11 @@ export default function AIAllocationPanel() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: name === 'period_number' ? parseInt(value) : value }));
+    let finalValue = value;
+    if (name === 'period_number') finalValue = parseInt(value);
+    else if (name === 'original_teacher_id') finalValue = value.trim();
+    
+    setFormData(prev => ({ ...prev, [name]: finalValue }));
   };
 
   const handleFindCover = async (e) => {
@@ -56,6 +60,7 @@ export default function AIAllocationPanel() {
         ai_reasoning: result.reason
       });
       setSuccess(true);
+      if (onAdjustmentCreated) onAdjustmentCreated();
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to create adjustment.");
     } finally {
@@ -73,7 +78,7 @@ export default function AIAllocationPanel() {
         <p className="text-sm text-slate-400 mt-1">Find the best covering teacher automatically considering workload limits.</p>
       </div>
 
-      <div className="p-6 flex-1 overflow-y-auto">
+      <div className="p-6">
         <form onSubmit={handleFindCover} className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -135,9 +140,9 @@ export default function AIAllocationPanel() {
               </div>
               <p className="text-sm text-slate-300 leading-relaxed max-w-[85%]">{result.reason}</p>
               
-              <button onClick={handleApprove} disabled={saving} className="mt-5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg py-2.5 px-6 text-sm font-medium transition-colors flex items-center justify-center gap-2">
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
-                {saving ? 'Approving...' : 'Approve Allocation'}
+              <button onClick={handleApprove} disabled={saving} className="mt-5 w-full bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg py-3 px-6 text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20">
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-5 w-5" />}
+                {saving ? 'Confirming...' : 'Confirm Adjustment'}
               </button>
             </div>
           </div>

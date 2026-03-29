@@ -207,44 +207,91 @@ def create_adjustment(payload: AdjustmentCreate):
     supabase = get_supabase_client()
     week_start = _get_week_start(payload.date)
 
-    adjustment_insert = (
-        supabase.table("adjustments")
-        .insert(payload.model_dump())
-        .execute()
-    )
-    inserted_adjustment = (adjustment_insert.data or [None])[0]
+    try:
+        adjustment_insert = (
+            supabase.table("adjustments")
+            .insert(payload.model_dump())
+            .execute()
+        )
+        inserted_adjustment = (adjustment_insert.data or [None])[0]
 
-    existing_tracker = (
-        supabase.table("extra_period_tracker")
-        .select("teacher_id,week_start,extra_count")
-        .eq("teacher_id", payload.covering_teacher_id)
-        .eq("week_start", week_start)
-        .execute()
-    )
-
-    if existing_tracker.data:
-        current_count = existing_tracker.data[0]["extra_count"]
-        (
+        existing_tracker = (
             supabase.table("extra_period_tracker")
-            .update({"extra_count": current_count + 1})
+            .select("teacher_id,week_start,extra_count")
             .eq("teacher_id", payload.covering_teacher_id)
             .eq("week_start", week_start)
             .execute()
         )
-    else:
-        (
-            supabase.table("extra_period_tracker")
-            .insert(
-                {
-                    "teacher_id": payload.covering_teacher_id,
-                    "week_start": week_start,
-                    "extra_count": 1,
-                }
+
+        if existing_tracker.data:
+            current_count = existing_tracker.data[0]["extra_count"]
+            (
+                supabase.table("extra_period_tracker")
+                .update({"extra_count": current_count + 1})
+                .eq("teacher_id", payload.covering_teacher_id)
+                .eq("week_start", week_start)
+                .execute()
             )
+        else:
+            (
+                supabase.table("extra_period_tracker")
+                .insert(
+                    {
+                        "teacher_id": payload.covering_teacher_id,
+                        "week_start": week_start,
+                        "extra_count": 1,
+                    }
+                )
+                .execute()
+            )
+
+        return {
+            "message": "Adjustment saved and extra period count updated",
+            "adjustment": inserted_adjustment,
+        }
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/adjustments/today")
+def get_todays_adjustments(query_date: str = None):
+    """
+    Get all AI adjustments for today (or a specified date).
+    """
+    if not query_date:
+        query_date = datetime.now().date().isoformat()
+        
+    supabase = get_supabase_client()
+    try:
+        response = (
+            supabase.table("adjustments")
+            .select("*")
+            .eq("date", query_date)
+            .order("period_number")
             .execute()
         )
+        return {"adjustments": response.data or []}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
-    return {
-        "message": "Adjustment saved and extra period count updated",
-        "adjustment": inserted_adjustment,
-    }
+
+@router.delete("/adjustments/{adjustment_id}")
+def delete_adjustment(adjustment_id: int):
+    """
+    Delete an existing AI adjustment.
+    """
+    supabase = get_supabase_client()
+    try:
+        response = (
+            supabase.table("adjustments")
+            .delete()
+            .eq("id", adjustment_id)
+            .execute()
+        )
+        if not response.data:
+            raise HTTPException(status_code=404, detail="Adjustment not found")
+        return {"message": "Adjustment deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -5,14 +5,20 @@ import api from '../api';
 export default function TimetableTable({ day, period }) {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [localPeriod, setLocalPeriod] = useState(period || 1);
+
+  // Sync local period if the parent explicitly updates to a new current active period
+  useEffect(() => {
+    if (period) setLocalPeriod(period);
+  }, [period]);
 
   useEffect(() => {
-    if (!period) return;
+    if (!localPeriod) return;
     
     const fetchTimetable = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`/timetable?day=${day}&period=${period}`);
+        const response = await api.get(`/timetable?day=${day}&period=${localPeriod}`);
         setEntries(response.data.entries || []);
       } catch (error) {
         console.error("Error fetching timetable:", error);
@@ -22,16 +28,7 @@ export default function TimetableTable({ day, period }) {
     };
 
     fetchTimetable();
-  }, [day, period]);
-
-  if (!period) {
-    return (
-      <div className="bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl p-8 text-center text-slate-400">
-        <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
-        <p>Waiting for current period...</p>
-      </div>
-    );
-  }
+  }, [day, localPeriod]);
 
   return (
     <div className="bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden flex flex-col h-full">
@@ -41,11 +38,29 @@ export default function TimetableTable({ day, period }) {
             <BookOpen className="h-5 w-5 text-indigo-400" />
             Live Timetable
           </h3>
-          <p className="text-sm text-slate-400 mt-1">{day} • Period {period}</p>
+          <p className="text-sm text-slate-400 mt-1">{day} • Period {localPeriod}</p>
         </div>
         {loading && <Loader2 className="h-5 w-5 text-indigo-400 animate-spin" />}
       </div>
       
+      <div className="px-6 py-4 border-b border-slate-700/50 bg-slate-900/40">
+        <div className="flex flex-wrap gap-2">
+          {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
+            <button
+              key={p}
+              onClick={() => setLocalPeriod(p)}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                localPeriod === p
+                  ? 'bg-indigo-500 text-white shadow-md shadow-indigo-500/20 border border-indigo-400'
+                  : 'bg-slate-800/80 text-slate-400 hover:bg-slate-700 hover:text-slate-200 border border-slate-700 backdrop-blur-sm'
+              }`}
+            >
+              Period {p}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="overflow-x-auto flex-1">
         <table className="w-full text-left border-collapse">
           <thead>
