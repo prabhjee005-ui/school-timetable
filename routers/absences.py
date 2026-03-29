@@ -8,7 +8,7 @@ router = APIRouter(tags=["Absences"])
 
 
 class AbsenceCreate(BaseModel):
-    teacher_id: int
+    teacher_id: str
     date: str = Field(..., description="Date in YYYY-MM-DD format")
     period_number: int = Field(..., ge=1, le=8)
     reason: str
