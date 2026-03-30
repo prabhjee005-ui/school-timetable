@@ -65,16 +65,17 @@ export default function TimetableTable({ day, period }) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-700/50">
-              <th className="px-6 py-4 font-medium">Class</th>
-              <th className="px-6 py-4 font-medium">Subject</th>
-              <th className="px-6 py-4 font-medium">Teacher</th>
-              <th className="px-6 py-4 font-medium">Room</th>
+              <th className="px-6 py-4 font-medium">CLASS</th>
+              <th className="px-6 py-4 font-medium">SUBJECT</th>
+              <th className="px-6 py-4 font-medium">TEACHER NAME</th>
+              <th className="px-6 py-4 font-medium">TEACHER ID</th>
+              <th className="px-6 py-4 font-medium">ROOM</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {entries.length === 0 && !loading ? (
               <tr>
-                <td colSpan="4" className="px-6 py-8 text-center text-slate-500">
+                <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
                   No classes scheduled for this period.
                 </td>
               </tr>
@@ -92,12 +93,19 @@ export default function TimetableTable({ day, period }) {
                       {entry.subject}
                     </span>
                   </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-slate-300">
+                    <span className="font-medium text-slate-300">
+                      {entry.teacher_name ?? '-'}
+                    </span>
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-slate-300">
-                        {entry.teacher_id.substring(1)}
+                        {entry.teacher_id ? entry.teacher_id.substring(1) : ''}
                       </div>
-                      <span className="text-slate-300 font-medium">{entry.teacher_id}</span>
+                      <span className="text-slate-300 font-medium">
+                        {entry.teacher_id ?? '-'}
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

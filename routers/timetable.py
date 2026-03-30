@@ -5,11 +5,12 @@ router = APIRouter(tags=["Timetable"])
 
 @router.get("/timetable")
 def get_timetable(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
+    day = day.title()
     supabase = get_supabase_client()
     response = (
         supabase.table("timetable")
         .select("id,day,period_number,class_name,teacher_id,subject,room,teachers(name)")
-        .eq("day", day.title())
+        .eq("day", day)
         .eq("period_number", period)
         .order("class_name")
         .execute()
@@ -31,6 +32,7 @@ def get_timetable(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
 
 @router.get("/free-teachers")
 def get_free_teachers(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
+    day = day.title()
     supabase = get_supabase_client()
     all_teachers = supabase.table("teachers").select("id,name,subjects,max_extra").execute()
     if not all_teachers.data:
@@ -38,7 +40,7 @@ def get_free_teachers(day: str = Query(...), period: int = Query(..., ge=1, le=8
     busy_teachers = (
         supabase.table("timetable")
         .select("teacher_id")
-        .eq("day", day.title())
+        .eq("day", day)
         .eq("period_number", period)
         .execute()
     )
