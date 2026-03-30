@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api';
 
 export default function LeaveRequest() {
@@ -12,6 +12,26 @@ export default function LeaveRequest() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [teachers, setTeachers] = useState([]);
+  const [teachersLoading, setTeachersLoading] = useState(false);
+  const [teachersError, setTeachersError] = useState(null);
+
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      setTeachersLoading(true);
+      setTeachersError(null);
+      try {
+        const response = await api.get('/teachers');
+        setTeachers(response.data.teachers || []);
+      } catch (err) {
+        setTeachersError(err.response?.data?.detail || 'Failed to load teachers.');
+      } finally {
+        setTeachersLoading(false);
+      }
+    };
+
+    fetchTeachers();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,16 +76,30 @@ export default function LeaveRequest() {
       <div className="p-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-slate-400 mb-1">Teacher ID</label>
-            <input
+            <label className="block text-xs font-medium text-slate-400 mb-1">Teacher</label>
+            <select
               name="teacher_id"
-              type="text"
               required
               value={formData.teacher_id}
               onChange={handleChange}
-              placeholder="e.g. T01"
-              className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
-            />
+              disabled={teachersLoading}
+              className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500 disabled:opacity-60"
+            >
+              {teachersLoading ? (
+                <option value="">Loading teachers...</option>
+              ) : (
+                <>
+                  <option value="" disabled>
+                    Select a teacher
+                  </option>
+                  {teachers.map((t) => (
+                    <option key={t.id} value={t.id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -114,6 +148,12 @@ export default function LeaveRequest() {
             {loading ? 'Submitting...' : 'Submit Leave'}
           </button>
         </form>
+
+        {teachersError && (
+          <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-200 whitespace-pre-wrap">
+            {teachersError}
+          </div>
+        )}
 
         {error && (
           <div className="mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-sm text-red-200 whitespace-pre-wrap">

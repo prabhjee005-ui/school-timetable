@@ -54,3 +54,18 @@ def get_free_teachers(day: str = Query(...), period: int = Query(..., ge=1, le=8
         "busy_teacher_ids": list(busy_teacher_ids),
         "free_teachers": free_teacher_list,
     }
+
+
+@router.get("/teachers")
+def get_teachers():
+    """
+    Return all teachers with IDs and names for frontend dropdowns.
+    """
+    supabase = get_supabase_client()
+    response = (
+        supabase.table("teachers")
+        .select("id,name")
+        .order("name")
+        .execute()
+    )
+    return {"teachers": response.data or []}
