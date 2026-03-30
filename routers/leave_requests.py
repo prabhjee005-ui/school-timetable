@@ -20,17 +20,11 @@ from routers.ai_allocation import (
 
 router = APIRouter(tags=["Leave Requests"])
 
-N8N_WEBHOOK_URL = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/b031ba50-7bc3-4515-98bc-de009ec075da"
+N8N_PRINCIPAL_WEBHOOK = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/b031ba50-7bc3-4515-98bc-de009ec075da"
+N8N_TEACHER_WEBHOOK = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/7777d03b-0dcf-4571-9dbf-f64b5f8a90fc"
 
 _LEAVE_ID_FIELDS: list[str] = ["id", "leave_request_id", "leave_id", "request_id"]
-_STATUS_FIELDS: list[str] = [
-    "status",
-    "leave_status",
-    "approval_status",
-    "decision_status",
-    "state",
-    "approval_state",
-]
+_STATUS_FIELDS: list[str] = ["status", "leave_status", "approval_status", "decision_status", "state", "approval_state"]
 
 
 def _get_first(row: dict[str, Any], keys: list[str]) -> Any:
@@ -43,12 +37,7 @@ def _get_first(row: dict[str, Any], keys: list[str]) -> Any:
 def _fetch_leave_request_by_id(supabase, id_value: Any) -> tuple[Optional[dict[str, Any]], Optional[str]]:
     for id_field in _LEAVE_ID_FIELDS:
         try:
-            response = (
-                supabase.table("leave_requests")
-                .select("*")
-                .eq(id_field, id_value)
-                .execute()
-            )
+            response = supabase.table("leave_requests").select("*").eq(id_field, id_value).execute()
             if response.data:
                 return response.data[0], id_field
         except Exception:
@@ -65,6 +54,30 @@ def _detect_status_field(row: dict[str, Any]) -> Optional[str]:
 
 def _update_leave_status(supabase, id_field: str, id_value: Any, status_field: str, new_status: str) -> None:
     supabase.table("leave_requests").update({status_field: new_status}).eq(id_field, id_value).execute()
+
+
+def _get_teacher(supabase, teacher_id: str) -> dict:
+    try:
+        t = supabase.table("teachers").select("name,email").eq("id", teacher_id).execute()
+        if t.data:
+            return t.data[0]
+    except Exception:
+        pass
+    return {"name": teacher_id, "email": ""}
+
+
+def _notify_teacher(teacher_name: str, teacher_email: str, status: str, from_date: str, to_date: str, reason: str):
+    try:
+        http_requests.post(N8N_TEACHER_WEBHOOK, json={
+            "teacher_name": teacher_name,
+            "teacher_email": teacher_email,
+            "status": status,
+            "from_date": from_date,
+            "to_date": to_date,
+            "reason": reason,
+        }, timeout=5)
+    except Exception:
+        pass
 
 
 class LeaveRequestCreate(BaseModel):
@@ -88,19 +101,10 @@ def _day_name(d: date) -> str:
 
 
 def _ensure_absence(supabase, *, teacher_id: str, absence_date: str, period_number: int, reason: str) -> None:
-    existing = (
-        supabase.table("absences")
-        .select("id")
-        .eq("teacher_id", teacher_id)
-        .eq("date", absence_date)
-        .eq("period_number", period_number)
-        .execute()
-    )
+    existing = supabase.table("absences").select("id").eq("teacher_id", teacher_id).eq("date", absence_date).eq("period_number", period_number).execute()
     if existing.data:
         return
-    supabase.table("absences").insert(
-        {"teacher_id": teacher_id, "date": absence_date, "period_number": period_number, "reason": reason}
-    ).execute()
+    supabase.table("absences").insert({"teacher_id": teacher_id, "date": absence_date, "period_number": period_number, "reason": reason}).execute()
 
 
 @router.post("/leave-requests")
@@ -109,7 +113,6 @@ def create_leave_request(payload: LeaveRequestCreate):
         raise HTTPException(status_code=400, detail="from_date must be <= to_date")
 
     supabase = get_supabase_client()
-
     insert_payload = {
         "teacher_id": payload.teacher_id,
         "from_date": payload.from_date.isoformat(),
@@ -117,23 +120,14 @@ def create_leave_request(payload: LeaveRequestCreate):
         "reason": payload.reason,
         "status": "pending",
     }
-
     insert_response = supabase.table("leave_requests").insert(insert_payload).execute()
     inserted = (insert_response.data or [None])[0]
 
-    # Get teacher name for notification
-    teacher_name = payload.teacher_name
-    if not teacher_name:
-        try:
-            t = supabase.table("teachers").select("name").eq("id", payload.teacher_id).execute()
-            if t.data:
-                teacher_name = t.data[0].get("name", payload.teacher_id)
-        except Exception:
-            teacher_name = payload.teacher_id
+    teacher = _get_teacher(supabase, payload.teacher_id)
+    teacher_name = payload.teacher_name or teacher.get("name", payload.teacher_id)
 
-    # Notify principal via n8n webhook
     try:
-        http_requests.post(N8N_WEBHOOK_URL, json={
+        http_requests.post(N8N_PRINCIPAL_WEBHOOK, json={
             "teacher_name": teacher_name,
             "teacher_id": payload.teacher_id,
             "from_date": payload.from_date.isoformat(),
@@ -141,7 +135,7 @@ def create_leave_request(payload: LeaveRequestCreate):
             "reason": payload.reason,
         }, timeout=5)
     except Exception:
-        pass  # Don't block if webhook fails
+        pass
 
     return {"message": "Leave request submitted", "leave_request": inserted}
 
@@ -149,14 +143,8 @@ def create_leave_request(payload: LeaveRequestCreate):
 @router.get("/leave-requests")
 def get_leave_requests():
     supabase = get_supabase_client()
-    response = (
-        supabase.table("leave_requests")
-        .select("*, teachers(name)")
-        .order("created_at", desc=True)
-        .execute()
-    )
+    response = supabase.table("leave_requests").select("*, teachers(name)").order("created_at", desc=True).execute()
     rows = response.data or []
-
     for row in rows:
         teacher_rel = row.get("teachers")
         teacher_name = None
@@ -166,14 +154,12 @@ def get_leave_requests():
             teacher_name = teacher_rel[0].get("name")
         row["teacher_name"] = teacher_name
         row.pop("teachers", None)
-
     return {"leave_requests": rows}
 
 
 @router.post("/leave-requests/{leave_id}/approve")
 def approve_leave(leave_id: str):
     supabase = get_supabase_client()
-
     leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=leave_id)
     if not leave_request or not id_field:
         raise HTTPException(status_code=404, detail="Leave request not found")
@@ -193,6 +179,8 @@ def approve_leave(leave_id: str):
     from_date = datetime.strptime(str(from_date_raw), "%Y-%m-%d").date()
     to_date = datetime.strptime(str(to_date_raw), "%Y-%m-%d").date()
 
+    teacher = _get_teacher(supabase, teacher_id)
+
     try:
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
@@ -201,44 +189,33 @@ def approve_leave(leave_id: str):
         for d in _iter_dates_inclusive(from_date, to_date):
             absence_date = d.isoformat()
             day_name = _day_name(d)
-
-            timetable_response = (
-                supabase.table("timetable")
-                .select("period_number,class_name,subject,room")
-                .eq("day", day_name)
-                .eq("teacher_id", str(teacher_id))
-                .order("period_number")
-                .execute()
-            )
+            timetable_response = supabase.table("timetable").select("period_number,class_name,subject,room").eq("day", day_name).eq("teacher_id", str(teacher_id)).order("period_number").execute()
             timetable_rows = timetable_response.data or []
             if not timetable_rows:
                 continue
-
             inserted_periods: set[int] = set()
             for row in timetable_rows:
                 period_number = row["period_number"]
                 if period_number not in inserted_periods:
                     _ensure_absence(supabase, teacher_id=str(teacher_id), absence_date=absence_date, period_number=period_number, reason=reason)
                     inserted_periods.add(period_number)
-
             for row in timetable_rows:
                 period_number = row["period_number"]
-                covering = find_covering_teacher(
-                    CoveringTeacherRequest(
-                        day=day_name, date=absence_date, period_number=period_number,
-                        class_name=row["class_name"], subject=row["subject"], room=row["room"],
-                        original_teacher_id=str(teacher_id),
-                    )
-                )
+                covering = find_covering_teacher(CoveringTeacherRequest(day=day_name, date=absence_date, period_number=period_number, class_name=row["class_name"], subject=row["subject"], room=row["room"], original_teacher_id=str(teacher_id)))
                 assigned_teacher_id = covering["assigned_teacher_id"]
                 ai_reason = covering.get("reason") or ""
-                create_adjustment(
-                    AdjustmentCreate(
-                        date=absence_date, period_number=period_number, class_name=row["class_name"],
-                        original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id),
-                        subject=row["subject"], room=row["room"], ai_reasoning=ai_reason,
-                    )
-                )
+                create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=row["room"], ai_reasoning=ai_reason))
+
+        # Notify teacher their leave is approved
+        _notify_teacher(
+            teacher_name=teacher.get("name", teacher_id),
+            teacher_email=teacher.get("email", ""),
+            status="approved",
+            from_date=from_date.isoformat(),
+            to_date=to_date.isoformat(),
+            reason=reason,
+        )
+
         return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
         try:
@@ -261,10 +238,28 @@ def reject_leave(leave_id: str):
     if status_field and str(leave_request.get(status_field)).lower() != "pending":
         return {"message": "Leave request already processed", "leave_request": leave_request}
 
+    teacher_id = _get_first(leave_request, ["teacher_id", "teacherId", "teacher"])
+    from_date_raw = _get_first(leave_request, ["from_date", "fromDate", "from"])
+    to_date_raw = _get_first(leave_request, ["to_date", "toDate", "to"])
+    reason = _get_first(leave_request, ["reason", "leave_reason", "notes", "description"]) or ""
+
+    teacher = _get_teacher(supabase, teacher_id)
+
     try:
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
         _update_leave_status(supabase, id_field=id_field, id_value=leave_id, status_field=status_field, new_status="rejected")
+
+        # Notify teacher their leave is rejected
+        _notify_teacher(
+            teacher_name=teacher.get("name", teacher_id),
+            teacher_email=teacher.get("email", ""),
+            status="rejected",
+            from_date=str(from_date_raw),
+            to_date=str(to_date_raw),
+            reason=reason,
+        )
+
         return {"message": "Leave request rejected", "leave_request_id": leave_id}
     except Exception as e:
         traceback.print_exc()
