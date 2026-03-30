@@ -141,12 +141,13 @@ export default function PrincipalView() {
                 </td>
               </tr>
             ) : (
-              filtered.map((row) => {
+              filtered.map((row, idx) => {
                 const badge = statusBadge(row.status);
                 const status = normalizedStatus(row.status);
                 const canAct = status === 'pending';
+                const rowKey = row.id ?? idx;
                 return (
-                  <tr key={row.id} className="hover:bg-slate-700/30 transition-colors">
+                  <tr key={rowKey} className="hover:bg-slate-700/30 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-slate-300 font-medium">{row.id}</span>
                     </td>
