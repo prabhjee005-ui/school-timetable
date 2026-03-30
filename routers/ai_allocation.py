@@ -39,6 +39,13 @@ def _get_week_start(input_date: str) -> str:
     return week_start.isoformat()
 
 
+def _teacher_extra_limit(teacher: dict[str, Any], *, default_if_null: int = 3) -> int:
+    raw = teacher.get("max_extra")
+    if raw is None:
+        return default_if_null
+    return int(raw)
+
+
 def _get_json_from_groq(prompt: str) -> dict[str, Any]:
     api_key = get_groq_api_key()
     payload = {
@@ -127,12 +134,10 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     )
     extra_map = {row["teacher_id"]: row["extra_count"] for row in (tracker_response.data or [])}
 
-    max_allowed = 3
     eligible_teachers = []
     for teacher in free_teachers:
         used = extra_map.get(teacher["id"], 0)
-        teacher_max = teacher.get("max_extra") or max_allowed
-        limit = min(teacher_max, max_allowed)
+        limit = _teacher_extra_limit(teacher)
         if used < limit:
             eligible_teachers.append(
                 {
