@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CalendarDays, Clock } from 'lucide-react';
 
-export default function Header() {
+export default function Header({ user, onLogout }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -21,11 +21,28 @@ export default function Header() {
               AI Timetable System | DPS Demo
             </h1>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
-            <Clock className="h-4 w-4" />
-            <span className="font-medium font-mono text-sm tracking-wide">
-              {time.toLocaleTimeString()}
-            </span>
+          <div className="flex items-center gap-2">
+            {user && (
+              <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
+                <span className="font-medium text-sm whitespace-nowrap">
+                  {user.name}
+                </span>
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  className="text-xs font-medium px-3 py-1.5 rounded-lg bg-red-500/15 border border-red-500/30 text-red-200 hover:bg-red-500/25 transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
+              <Clock className="h-4 w-4" />
+              <span className="font-medium font-mono text-sm tracking-wide">
+                {time.toLocaleTimeString()}
+              </span>
+            </div>
           </div>
         </div>
       </div>

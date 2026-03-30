@@ -100,6 +100,7 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     all_teachers_response = (
         supabase.table("teachers")
         .select("id,name,subjects,max_extra")
+        .eq("role", "teacher")
         .order("id")
         .execute()
     )
