@@ -20,7 +20,7 @@ from routers.ai_allocation import (
 
 router = APIRouter(tags=["Leave Requests"])
 
-N8N_PRINCIPAL_WEBHOOK = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/b031ba50-7bc3-4515-98bc-de009ec075da"
+N8N_WEBHOOK_URL = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/b031ba50-7bc3-4515-98bc-de009ec075da"
 N8N_TEACHER_WEBHOOK = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/7777d03b-0dcf-4571-9dbf-f64b5f8a90fc"
 
 _LEAVE_ID_FIELDS: list[str] = ["id", "leave_request_id", "leave_id", "request_id"]
@@ -58,13 +58,9 @@ def _update_leave_status(supabase, id_field: str, id_value: Any, status_field: s
 
 def _get_teacher(supabase, teacher_id: str) -> dict:
     try:
-        t = supabase.table("teachers").select("*").eq("id", teacher_id).execute()
+        t = supabase.table("teachers").select("name,email").eq("id", teacher_id).execute()
         if t.data:
-            teacher = t.data[0]
-            return {
-                "name": teacher.get("name", teacher_id),
-                "email": teacher.get("email") or teacher.get("teacher_email") or "",
-            }
+            return t.data[0]
     except Exception:
         pass
     return {"name": teacher_id, "email": ""}
@@ -72,14 +68,18 @@ def _get_teacher(supabase, teacher_id: str) -> dict:
 
 def _notify_teacher(teacher_name: str, teacher_email: str, status: str, from_date: str, to_date: str, reason: str):
     try:
-        http_requests.post(N8N_TEACHER_WEBHOOK, json={
-            "teacher_name": teacher_name,
-            "teacher_email": teacher_email,
-            "status": status,
-            "from_date": from_date,
-            "to_date": to_date,
-            "reason": reason,
-        }, timeout=5)
+        http_requests.post(
+            N8N_TEACHER_WEBHOOK,
+            json={
+                "teacher_name": teacher_name,
+                "teacher_email": teacher_email,
+                "status": status,
+                "from_date": from_date,
+                "to_date": to_date,
+                "reason": reason,
+            },
+            timeout=5,
+        )
     except Exception:
         pass
 
@@ -131,7 +131,7 @@ def create_leave_request(payload: LeaveRequestCreate):
     teacher_name = payload.teacher_name or teacher.get("name", payload.teacher_id)
 
     try:
-        http_requests.post(N8N_PRINCIPAL_WEBHOOK, json={
+        http_requests.post(N8N_WEBHOOK_URL, json={
             "teacher_name": teacher_name,
             "teacher_id": payload.teacher_id,
             "from_date": payload.from_date.isoformat(),
@@ -183,12 +183,20 @@ def approve_leave(leave_id: str):
     from_date = datetime.strptime(str(from_date_raw), "%Y-%m-%d").date()
     to_date = datetime.strptime(str(to_date_raw), "%Y-%m-%d").date()
 
-    teacher = _get_teacher(supabase, teacher_id)
-
     try:
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
         _update_leave_status(supabase, id_field=id_field, id_value=leave_id, status_field=status_field, new_status="approved")
+
+        teacher = _get_teacher(supabase, str(teacher_id))
+        _notify_teacher(
+            teacher.get("name", teacher_id),
+            teacher.get("email", ""),
+            "approved",
+            from_date.isoformat(),
+            to_date.isoformat(),
+            reason,
+        )
 
         for d in _iter_dates_inclusive(from_date, to_date):
             absence_date = d.isoformat()
@@ -209,19 +217,6 @@ def approve_leave(leave_id: str):
                 assigned_teacher_id = covering["assigned_teacher_id"]
                 ai_reason = covering.get("reason") or ""
                 create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=row["room"], ai_reasoning=ai_reason))
-
-        # Notify teacher their leave is approved (non-blocking)
-        try:
-            _notify_teacher(
-                teacher_name=teacher.get("name", teacher_id),
-                teacher_email=teacher.get("email", ""),
-                status="approved",
-                from_date=from_date.isoformat(),
-                to_date=to_date.isoformat(),
-                reason=reason,
-            )
-        except Exception:
-            pass
 
         return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
@@ -250,25 +245,20 @@ def reject_leave(leave_id: str):
     to_date_raw = _get_first(leave_request, ["to_date", "toDate", "to"])
     reason = _get_first(leave_request, ["reason", "leave_reason", "notes", "description"]) or ""
 
-    teacher = _get_teacher(supabase, teacher_id)
-
     try:
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
         _update_leave_status(supabase, id_field=id_field, id_value=leave_id, status_field=status_field, new_status="rejected")
 
-        # Notify teacher their leave is rejected (non-blocking)
-        try:
-            _notify_teacher(
-                teacher_name=teacher.get("name", teacher_id),
-                teacher_email=teacher.get("email", ""),
-                status="rejected",
-                from_date=str(from_date_raw),
-                to_date=str(to_date_raw),
-                reason=reason,
-            )
-        except Exception:
-            pass
+        teacher = _get_teacher(supabase, str(teacher_id))
+        _notify_teacher(
+            teacher.get("name", teacher_id),
+            teacher.get("email", ""),
+            "rejected",
+            str(from_date_raw),
+            str(to_date_raw),
+            reason,
+        )
 
         return {"message": "Leave request rejected", "leave_request_id": leave_id}
     except Exception as e:
