@@ -76,7 +76,7 @@ export default function App() {
     ? 'Monday'
     : currentDay;
 
-  if (path === '/login') {
+  if (path === '/login' || !auth) {
     return (
       <Login
         onSuccess={(user) => {
