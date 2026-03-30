@@ -37,7 +37,7 @@ def _get_first(row: dict[str, Any], keys: list[str]) -> Any:
     return None
 
 
-def _fetch_leave_request_by_id(supabase, id_value: int) -> tuple[Optional[dict[str, Any]], Optional[str]]:
+def _fetch_leave_request_by_id(supabase, id_value: Any) -> tuple[Optional[dict[str, Any]], Optional[str]]:
     """
     Supabase schemas sometimes differ across projects; this helper tries a few common id column names.
     Returns (row, id_field_used).
@@ -65,7 +65,7 @@ def _detect_status_field(row: dict[str, Any]) -> Optional[str]:
     return None
 
 
-def _update_leave_status(supabase, id_field: str, id_value: int, status_field: str, new_status: str) -> None:
+def _update_leave_status(supabase, id_field: str, id_value: Any, status_field: str, new_status: str) -> None:
     supabase.table("leave_requests").update({status_field: new_status}).eq(id_field, id_value).execute()
 
 
@@ -172,14 +172,14 @@ def get_leave_requests():
     return {"leave_requests": rows}
 
 
-@router.post("/leave-requests/{id}/approve")
-def approve_leave_request(id: int):
+@router.post("/leave-requests/{leave_id}/approve")
+def approve_leave(leave_id: str):
     """
     Approve a leave request and auto-find cover for all affected periods.
     """
     supabase = get_supabase_client()
 
-    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=id)
+    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=leave_id)
     if not leave_request or not id_field:
         raise HTTPException(status_code=404, detail="Leave request not found")
 
@@ -268,21 +268,27 @@ def approve_leave_request(id: int):
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
 
-        _update_leave_status(supabase, id_field=id_field, id_value=id, status_field=status_field, new_status="approved")
-        return {"message": "Leave request approved", "leave_request_id": id}
+        _update_leave_status(
+            supabase,
+            id_field=id_field,
+            id_value=leave_id,
+            status_field=status_field,
+            new_status="approved",
+        )
+        return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
         # Leave remains pending so the principal can retry later.
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Approval failed: {e}") from e
 
 
-@router.post("/leave-requests/{id}/reject")
-def reject_leave_request(id: int):
+@router.post("/leave-requests/{leave_id}/reject")
+def reject_leave(leave_id: str):
     """
     Reject a leave request.
     """
     supabase = get_supabase_client()
-    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=id)
+    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=leave_id)
     if not leave_request or not id_field:
         raise HTTPException(status_code=404, detail="Leave request not found")
 
@@ -293,8 +299,14 @@ def reject_leave_request(id: int):
     try:
         if not status_field:
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
-        _update_leave_status(supabase, id_field=id_field, id_value=id, status_field=status_field, new_status="rejected")
-        return {"message": "Leave request rejected", "leave_request_id": id}
+        _update_leave_status(
+            supabase,
+            id_field=id_field,
+            id_value=leave_id,
+            status_field=status_field,
+            new_status="rejected",
+        )
+        return {"message": "Leave request rejected", "leave_request_id": leave_id}
     except Exception as e:
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Reject failed: {e}") from e
