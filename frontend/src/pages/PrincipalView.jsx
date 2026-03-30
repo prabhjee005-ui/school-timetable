@@ -15,6 +15,9 @@ export default function PrincipalView() {
       const response = await api.get('/leave-requests');
       setEntries(response.data.leave_requests || []);
     } catch (err) {
+      console.log('[PrincipalView] /leave-requests error (full):', err);
+      console.log('[PrincipalView] /leave-requests response:', err?.response);
+      console.log('[PrincipalView] /leave-requests response.data:', err?.response?.data);
       setError(err.response?.data?.detail || 'Failed to load leave requests.');
     } finally {
       setLoading(false);
