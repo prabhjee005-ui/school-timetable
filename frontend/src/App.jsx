@@ -54,6 +54,7 @@ export default function App() {
       return;
     }
 
+    // Always redirect logged-in users away from /login and / to their role page.
     if (path === '/login' || path === '/') {
       navigate(destinationPath);
       return;
