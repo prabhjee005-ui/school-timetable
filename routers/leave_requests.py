@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from datetime import date, datetime, timedelta
-from typing import Iterable
+from typing import Iterable, Optional, Any
+
+import traceback
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
@@ -16,6 +18,55 @@ from routers.ai_allocation import (
 
 
 router = APIRouter(tags=["Leave Requests"])
+
+_LEAVE_ID_FIELDS: list[str] = ["id", "leave_request_id", "leave_id", "request_id"]
+_STATUS_FIELDS: list[str] = [
+    "status",
+    "leave_status",
+    "approval_status",
+    "decision_status",
+    "state",
+    "approval_state",
+]
+
+
+def _get_first(row: dict[str, Any], keys: list[str]) -> Any:
+    for key in keys:
+        if key in row:
+            return row.get(key)
+    return None
+
+
+def _fetch_leave_request_by_id(supabase, id_value: int) -> tuple[Optional[dict[str, Any]], Optional[str]]:
+    """
+    Supabase schemas sometimes differ across projects; this helper tries a few common id column names.
+    Returns (row, id_field_used).
+    """
+    for id_field in _LEAVE_ID_FIELDS:
+        try:
+            response = (
+                supabase.table("leave_requests")
+                .select("*")
+                .eq(id_field, id_value)
+                .execute()
+            )
+            if response.data:
+                return response.data[0], id_field
+        except Exception:
+            # If the id column doesn't exist, Postgrest will raise; try next candidate.
+            continue
+    return None, None
+
+
+def _detect_status_field(row: dict[str, Any]) -> Optional[str]:
+    for status_field in _STATUS_FIELDS:
+        if status_field in row:
+            return status_field
+    return None
+
+
+def _update_leave_status(supabase, id_field: str, id_value: int, status_field: str, new_status: str) -> None:
+    supabase.table("leave_requests").update({status_field: new_status}).eq(id_field, id_value).execute()
 
 
 class LeaveRequestCreate(BaseModel):
@@ -128,23 +179,28 @@ def approve_leave_request(id: int):
     """
     supabase = get_supabase_client()
 
-    leave_response = (
-        supabase.table("leave_requests")
-        .select("*")
-        .eq("id", id)
-        .execute()
-    )
-    if not leave_response.data:
+    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=id)
+    if not leave_request or not id_field:
         raise HTTPException(status_code=404, detail="Leave request not found")
 
-    leave_request = leave_response.data[0]
-    if leave_request.get("status") != "pending":
+    status_field = _detect_status_field(leave_request)
+    if status_field and str(leave_request.get(status_field)).lower() != "pending":
         return {"message": "Leave request already processed", "leave_request": leave_request}
 
-    teacher_id = leave_request["teacher_id"]
-    from_date = datetime.strptime(leave_request["from_date"], "%Y-%m-%d").date()
-    to_date = datetime.strptime(leave_request["to_date"], "%Y-%m-%d").date()
-    reason = leave_request.get("reason") or ""
+    teacher_id = _get_first(leave_request, ["teacher_id", "teacherId", "teacher"])
+    from_date_raw = _get_first(leave_request, ["from_date", "fromDate", "from"])
+    to_date_raw = _get_first(leave_request, ["to_date", "toDate", "to"])
+    reason = _get_first(leave_request, ["reason", "leave_reason", "notes", "description"]) or ""
+
+    if teacher_id is None or from_date_raw is None or to_date_raw is None:
+        raise HTTPException(
+            status_code=400,
+            detail="Leave request record missing required fields (teacher_id/from_date/to_date).",
+        )
+
+    # Supabase often returns dates as strings.
+    from_date = datetime.strptime(str(from_date_raw), "%Y-%m-%d").date()
+    to_date = datetime.strptime(str(to_date_raw), "%Y-%m-%d").date()
 
     try:
         for d in _iter_dates_inclusive(from_date, to_date):
@@ -171,7 +227,7 @@ def approve_leave_request(id: int):
                 if period_number not in inserted_periods:
                     _ensure_absence(
                         supabase,
-                        teacher_id=teacher_id,
+                        teacher_id=str(teacher_id),
                         absence_date=absence_date,
                         period_number=period_number,
                         reason=reason,
@@ -209,11 +265,15 @@ def approve_leave_request(id: int):
                     )
                 )
 
-        supabase.table("leave_requests").update({"status": "approved"}).eq("id", id).execute()
+        if not status_field:
+            raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
+
+        _update_leave_status(supabase, id_field=id_field, id_value=id, status_field=status_field, new_status="approved")
         return {"message": "Leave request approved", "leave_request_id": id}
     except Exception as e:
         # Leave remains pending so the principal can retry later.
-        raise HTTPException(status_code=400, detail=f"Approval failed: {e}") from e
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Approval failed: {e}") from e
 
 
 @router.post("/leave-requests/{id}/reject")
@@ -222,20 +282,20 @@ def reject_leave_request(id: int):
     Reject a leave request.
     """
     supabase = get_supabase_client()
-
-    leave_response = (
-        supabase.table("leave_requests")
-        .select("*")
-        .eq("id", id)
-        .execute()
-    )
-    if not leave_response.data:
+    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=id)
+    if not leave_request or not id_field:
         raise HTTPException(status_code=404, detail="Leave request not found")
 
-    leave_request = leave_response.data[0]
-    if leave_request.get("status") != "pending":
+    status_field = _detect_status_field(leave_request)
+    if status_field and str(leave_request.get(status_field)).lower() != "pending":
         return {"message": "Leave request already processed", "leave_request": leave_request}
 
-    supabase.table("leave_requests").update({"status": "rejected"}).eq("id", id).execute()
-    return {"message": "Leave request rejected", "leave_request_id": id}
+    try:
+        if not status_field:
+            raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
+        _update_leave_status(supabase, id_field=id_field, id_value=id, status_field=status_field, new_status="rejected")
+        return {"message": "Leave request rejected", "leave_request_id": id}
+    except Exception as e:
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"Reject failed: {e}") from e
 
