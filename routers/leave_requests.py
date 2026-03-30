@@ -203,6 +203,17 @@ def approve_leave(leave_id: str):
     to_date = datetime.strptime(str(to_date_raw), "%Y-%m-%d").date()
 
     try:
+        # 1) Update leave request status to "approved" first (as per required flow).
+        if not status_field:
+            raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
+        _update_leave_status(
+            supabase,
+            id_field=id_field,
+            id_value=leave_id,
+            status_field=status_field,
+            new_status="approved",
+        )
+
         for d in _iter_dates_inclusive(from_date, to_date):
             absence_date = d.isoformat()
             day_name = _day_name(d)
@@ -212,7 +223,7 @@ def approve_leave(leave_id: str):
                 supabase.table("timetable")
                 .select("period_number,class_name,subject,room")
                 .eq("day", day_name)
-                .eq("teacher_id", teacher_id)
+                .eq("teacher_id", str(teacher_id))
                 .order("period_number")
                 .execute()
             )
@@ -264,20 +275,21 @@ def approve_leave(leave_id: str):
                         ai_reasoning=ai_reason,
                     )
                 )
-
-        if not status_field:
-            raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
-
-        _update_leave_status(
-            supabase,
-            id_field=id_field,
-            id_value=leave_id,
-            status_field=status_field,
-            new_status="approved",
-        )
         return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
-        # Leave remains pending so the principal can retry later.
+        # Best-effort rollback: if anything fails after approval, revert to pending.
+        try:
+            if status_field:
+                _update_leave_status(
+                    supabase,
+                    id_field=id_field,
+                    id_value=leave_id,
+                    status_field=status_field,
+                    new_status="pending",
+                )
+        except Exception:
+            pass
+
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Approval failed: {e}") from e
 
