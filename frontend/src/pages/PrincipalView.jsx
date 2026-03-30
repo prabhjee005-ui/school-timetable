@@ -72,6 +72,7 @@ export default function PrincipalView() {
             <tr className="bg-slate-900/50 text-xs uppercase tracking-wider text-slate-400 border-b border-slate-700/50">
               <th className="px-6 py-4 font-medium">ID</th>
               <th className="px-6 py-4 font-medium">Teacher ID</th>
+              <th className="px-6 py-4 font-medium">Teacher Name</th>
               <th className="px-6 py-4 font-medium">From</th>
               <th className="px-6 py-4 font-medium">To</th>
               <th className="px-6 py-4 font-medium">Reason</th>
@@ -82,7 +83,7 @@ export default function PrincipalView() {
           <tbody className="divide-y divide-slate-700/50">
             {pending.length === 0 && !loading ? (
               <tr>
-                <td colSpan="7" className="px-6 py-8 text-center text-slate-500">
+                <td colSpan="8" className="px-6 py-8 text-center text-slate-500">
                   No pending leave requests.
                 </td>
               </tr>
@@ -94,6 +95,9 @@ export default function PrincipalView() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-slate-300 font-medium">{row.teacher_id}</span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="text-slate-300 font-medium">{row.teacher_name ?? '-'}</span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="text-slate-300 font-medium">{row.from_date}</span>

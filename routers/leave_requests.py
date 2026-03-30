@@ -100,11 +100,25 @@ def get_leave_requests():
     supabase = get_supabase_client()
     response = (
         supabase.table("leave_requests")
-        .select("*")
+        .select("*, teachers(name)")
         .order("created_at", desc=True)
         .execute()
     )
-    return {"leave_requests": response.data or []}
+    rows = response.data or []
+
+    # Flatten the joined teachers relationship into teacher_name for frontend convenience.
+    for row in rows:
+        teacher_rel = row.get("teachers")
+        teacher_name = None
+        if isinstance(teacher_rel, dict):
+            teacher_name = teacher_rel.get("name")
+        elif isinstance(teacher_rel, list) and teacher_rel:
+            teacher_name = teacher_rel[0].get("name")
+
+        row["teacher_name"] = teacher_name
+        row.pop("teachers", None)
+
+    return {"leave_requests": rows}
 
 
 @router.post("/leave-requests/{id}/approve")
