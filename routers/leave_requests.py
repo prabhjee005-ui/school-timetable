@@ -58,9 +58,13 @@ def _update_leave_status(supabase, id_field: str, id_value: Any, status_field: s
 
 def _get_teacher(supabase, teacher_id: str) -> dict:
     try:
-        t = supabase.table("teachers").select("name,email").eq("id", teacher_id).execute()
+        t = supabase.table("teachers").select("*").eq("id", teacher_id).execute()
         if t.data:
-            return t.data[0]
+            teacher = t.data[0]
+            return {
+                "name": teacher.get("name", teacher_id),
+                "email": teacher.get("email") or teacher.get("teacher_email") or "",
+            }
     except Exception:
         pass
     return {"name": teacher_id, "email": ""}
@@ -206,15 +210,18 @@ def approve_leave(leave_id: str):
                 ai_reason = covering.get("reason") or ""
                 create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=row["room"], ai_reasoning=ai_reason))
 
-        # Notify teacher their leave is approved
-        _notify_teacher(
-            teacher_name=teacher.get("name", teacher_id),
-            teacher_email=teacher.get("email", ""),
-            status="approved",
-            from_date=from_date.isoformat(),
-            to_date=to_date.isoformat(),
-            reason=reason,
-        )
+        # Notify teacher their leave is approved (non-blocking)
+        try:
+            _notify_teacher(
+                teacher_name=teacher.get("name", teacher_id),
+                teacher_email=teacher.get("email", ""),
+                status="approved",
+                from_date=from_date.isoformat(),
+                to_date=to_date.isoformat(),
+                reason=reason,
+            )
+        except Exception:
+            pass
 
         return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
@@ -250,15 +257,18 @@ def reject_leave(leave_id: str):
             raise HTTPException(status_code=500, detail="Cannot update leave status: status field not found.")
         _update_leave_status(supabase, id_field=id_field, id_value=leave_id, status_field=status_field, new_status="rejected")
 
-        # Notify teacher their leave is rejected
-        _notify_teacher(
-            teacher_name=teacher.get("name", teacher_id),
-            teacher_email=teacher.get("email", ""),
-            status="rejected",
-            from_date=str(from_date_raw),
-            to_date=str(to_date_raw),
-            reason=reason,
-        )
+        # Notify teacher their leave is rejected (non-blocking)
+        try:
+            _notify_teacher(
+                teacher_name=teacher.get("name", teacher_id),
+                teacher_email=teacher.get("email", ""),
+                status="rejected",
+                from_date=str(from_date_raw),
+                to_date=str(to_date_raw),
+                reason=reason,
+            )
+        except Exception:
+            pass
 
         return {"message": "Leave request rejected", "leave_request_id": leave_id}
     except Exception as e:
