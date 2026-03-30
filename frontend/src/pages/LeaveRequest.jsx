@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import api from '../api';
 
-export default function LeaveRequest({ auth }) {
+export default function LeaveRequest() {
   const [formData, setFormData] = useState({
     teacher_name: '',
     teacher_id: '',
@@ -13,15 +13,6 @@ export default function LeaveRequest({ auth }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
-  useEffect(() => {
-    if (!auth) return;
-    setFormData((prev) => ({
-      ...prev,
-      teacher_id: auth.teacher_id || '',
-      teacher_name: auth.name || prev.teacher_name,
-    }));
-  }, [auth]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -75,7 +66,6 @@ export default function LeaveRequest({ auth }) {
               onChange={handleChange}
               placeholder="e.g. Mr. Rajesh Kumar"
               className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
-              disabled={!!auth}
             />
           </div>
 
@@ -89,7 +79,6 @@ export default function LeaveRequest({ auth }) {
               onChange={handleChange}
               placeholder="e.g. T01"
               className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
-              disabled={!!auth}
             />
           </div>
 
