@@ -6,6 +6,7 @@ export default function PrincipalView() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [actionLoadingId, setActionLoadingId] = useState(null);
+  const [clearAllLoading, setClearAllLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('all'); // all | pending | approved | rejected
 
   const fetchLeaveRequests = async () => {
@@ -51,6 +52,31 @@ export default function PrincipalView() {
       alert('Something went wrong. Please try again.');
     } finally {
       setActionLoadingId(null);
+    }
+  };
+
+  const deleteOne = async (id) => {
+    setActionLoadingId(id);
+    try {
+      await api.delete(`/leave-requests/${id}`);
+      await fetchLeaveRequests();
+    } catch {
+      alert('Could not delete leave request.');
+    } finally {
+      setActionLoadingId(null);
+    }
+  };
+
+  const clearAll = async () => {
+    if (!window.confirm('Are you sure you want to delete all leave requests?')) return;
+    setClearAllLoading(true);
+    try {
+      await api.delete('/leave-requests/all');
+      await fetchLeaveRequests();
+    } catch {
+      alert('Could not delete all leave requests.');
+    } finally {
+      setClearAllLoading(false);
     }
   };
 
@@ -122,6 +148,17 @@ export default function PrincipalView() {
         })}
       </div>
 
+      <div className="px-6 py-3 border-b border-slate-700/50 flex justify-end">
+        <button
+          type="button"
+          onClick={clearAll}
+          disabled={clearAllLoading || loading}
+          className="px-4 py-2 rounded-lg text-sm font-medium bg-red-500/15 border border-red-500/40 text-red-300 hover:bg-red-500/25 transition-colors disabled:opacity-50"
+        >
+          {clearAllLoading ? 'Deleting…' : 'Clear All'}
+        </button>
+      </div>
+
       <div className="overflow-x-auto w-full">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -182,26 +219,49 @@ export default function PrincipalView() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      {canAct ? (
-                        <div className="flex items-center justify-end gap-2">
-                          <button
-                            onClick={() => approve(row.id)}
-                            disabled={actionLoadingId === row.id}
-                            className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors disabled:opacity-50"
+                      <div className="flex items-center justify-end gap-2">
+                        {canAct ? (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => approve(row.id)}
+                              disabled={actionLoadingId === row.id}
+                              className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-500 hover:bg-emerald-600 text-white transition-colors disabled:opacity-50"
+                            >
+                              {actionLoadingId === row.id ? 'Processing...' : 'Approve'}
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => reject(row.id)}
+                              disabled={actionLoadingId === row.id}
+                              className="px-3 py-2 rounded-lg text-sm font-medium bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
+                            >
+                              {actionLoadingId === row.id ? 'Processing...' : 'Reject'}
+                            </button>
+                          </>
+                        ) : null}
+                        <button
+                          type="button"
+                          onClick={() => deleteOne(row.id)}
+                          disabled={actionLoadingId === row.id || clearAllLoading}
+                          className="p-2 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/30 transition-colors disabled:opacity-50"
+                          title="Delete"
+                          aria-label="Delete leave request"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-4 w-4"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
                           >
-                            {actionLoadingId === row.id ? 'Processing...' : 'Approve'}
-                          </button>
-                          <button
-                            onClick={() => reject(row.id)}
-                            disabled={actionLoadingId === row.id}
-                            className="px-3 py-2 rounded-lg text-sm font-medium bg-red-500 hover:bg-red-600 text-white transition-colors disabled:opacity-50"
-                          >
-                            {actionLoadingId === row.id ? 'Processing...' : 'Reject'}
-                          </button>
-                        </div>
-                      ) : (
-                        <span className="text-slate-400 font-medium">-</span>
-                      )}
+                            <path
+                              fillRule="evenodd"
+                              d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );

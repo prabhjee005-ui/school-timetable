@@ -161,6 +161,31 @@ def get_leave_requests():
     return {"leave_requests": rows}
 
 
+@router.delete("/leave-requests/all")
+def delete_all_leave_requests():
+    supabase = get_supabase_client()
+    deleted = 0
+    while True:
+        page = supabase.table("leave_requests").select("id").limit(200).execute()
+        rows = page.data or []
+        if not rows:
+            break
+        ids = [r["id"] for r in rows]
+        supabase.table("leave_requests").delete().in_("id", ids).execute()
+        deleted += len(ids)
+    return {"message": "All leave requests deleted", "deleted": deleted}
+
+
+@router.delete("/leave-requests/{leave_id}")
+def delete_leave_request(leave_id: str):
+    supabase = get_supabase_client()
+    leave_request, id_field = _fetch_leave_request_by_id(supabase, id_value=leave_id)
+    if not leave_request or not id_field:
+        raise HTTPException(status_code=404, detail="Leave request not found")
+    supabase.table("leave_requests").delete().eq(id_field, leave_id).execute()
+    return {"message": "Leave request deleted", "leave_request_id": leave_id}
+
+
 @router.post("/leave-requests/{leave_id}/approve")
 def approve_leave(leave_id: str):
     supabase = get_supabase_client()
