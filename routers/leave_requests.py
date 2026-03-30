@@ -22,6 +22,9 @@ router = APIRouter(tags=["Leave Requests"])
 
 N8N_WEBHOOK_URL = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/b031ba50-7bc3-4515-98bc-de009ec075da"
 N8N_TEACHER_WEBHOOK = "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/7777d03b-0dcf-4571-9dbf-f64b5f8a90fc"
+N8N_COVERING_ASSIGNMENT_WEBHOOK = (
+    "https://deserticolous-traditionally-armani.ngrok-free.dev/webhook/db91a216-28b0-49fd-b722-ad73532d3ccd"
+)
 
 _LEAVE_ID_FIELDS: list[str] = ["id", "leave_request_id", "leave_id", "request_id"]
 _STATUS_FIELDS: list[str] = ["status", "leave_status", "approval_status", "decision_status", "state", "approval_state"]
@@ -79,6 +82,35 @@ def _notify_teacher(teacher_name: str, teacher_email: str, status: str, from_dat
                 "reason": reason,
             },
             timeout=5,
+        )
+    except Exception:
+        pass
+
+
+def _notify_covering_teacher_assigned(
+    *,
+    covering_teacher_name: str,
+    covering_teacher_email: str,
+    absence_date: str,
+    period_number: int,
+    class_name: str,
+    subject: str,
+    room: str,
+) -> None:
+    try:
+        http_requests.post(
+            N8N_COVERING_ASSIGNMENT_WEBHOOK,
+            json={
+                "covering_teacher_name": covering_teacher_name,
+                "covering_teacher_email": covering_teacher_email,
+                "date": absence_date,
+                "period_number": period_number,
+                "class_name": class_name,
+                "subject": subject,
+                "room": room,
+            },
+            headers={"ngrok-skip-browser-warning": "true"},
+            timeout=10,
         )
     except Exception:
         pass
@@ -242,6 +274,16 @@ def approve_leave(leave_id: str):
                 assigned_teacher_id = covering["assigned_teacher_id"]
                 ai_reason = covering.get("reason") or ""
                 create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=row["room"], ai_reasoning=ai_reason))
+                cover_teacher = _get_teacher(supabase, str(assigned_teacher_id))
+                _notify_covering_teacher_assigned(
+                    covering_teacher_name=cover_teacher.get("name") or str(assigned_teacher_id),
+                    covering_teacher_email=cover_teacher.get("email") or "",
+                    absence_date=absence_date,
+                    period_number=period_number,
+                    class_name=row["class_name"],
+                    subject=row["subject"],
+                    room=row["room"],
+                )
 
         return {"message": "Leave request approved", "leave_request_id": leave_id}
     except Exception as e:
