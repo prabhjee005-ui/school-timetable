@@ -272,7 +272,18 @@ def get_todays_adjustments(query_date: str = None):
             .order("period_number")
             .execute()
         )
-        return {"adjustments": response.data or []}
+        adjustments = response.data or []
+
+        # Enrich with teacher names for the frontend.
+        teachers_response = supabase.table("teachers").select("id,name").execute()
+        teachers = teachers_response.data or []
+        teacher_map = {t.get("id"): t.get("name") for t in teachers}
+
+        for row in adjustments:
+            covering_teacher_id = row.get("covering_teacher_id")
+            row["covering_teacher_name"] = teacher_map.get(covering_teacher_id)
+
+        return {"adjustments": adjustments}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 

@@ -89,7 +89,9 @@ export default function AdjustmentsTable({ refreshTrigger }) {
                       <div className="h-6 w-6 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-xs font-bold text-emerald-400">
                         {entry.covering_teacher_id.substring(1)}
                       </div>
-                      <span className="text-slate-300 font-medium">{entry.covering_teacher_id}</span>
+                      <span className="text-slate-300 font-medium">
+                        {entry.covering_teacher_name ?? entry.covering_teacher_id}
+                      </span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
