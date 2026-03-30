@@ -29,8 +29,9 @@ export default function PrincipalView() {
     try {
       await api.post(`/leave-requests/${id}/approve`);
       await fetchLeaveRequests();
-    } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to approve leave request.');
+      alert('Leave request approved! Cover teachers assigned.');
+    } catch {
+      alert('Something went wrong. Please try again.');
     } finally {
       setActionLoadingId(null);
     }
@@ -41,8 +42,9 @@ export default function PrincipalView() {
     try {
       await api.post(`/leave-requests/${id}/reject`);
       await fetchLeaveRequests();
-    } catch (err) {
-      alert(err.response?.data?.detail || 'Failed to reject leave request.');
+      alert('Leave request rejected.');
+    } catch {
+      alert('Something went wrong. Please try again.');
     } finally {
       setActionLoadingId(null);
     }
