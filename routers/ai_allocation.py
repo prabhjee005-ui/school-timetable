@@ -1,12 +1,11 @@
-import json
+import re
 from datetime import datetime, timedelta
 from typing import Any
 
-import requests
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
-from database import get_groq_api_key, get_supabase_client
+from database import get_supabase_client
 
 
 router = APIRouter(tags=["AI Allocation"])
@@ -45,61 +44,51 @@ def _teacher_extra_limit(teacher: dict[str, Any], *, default_if_null: int = 3) -
         return default_if_null
     return int(raw)
 
-
-def _get_json_from_groq(prompt: str) -> dict[str, Any]:
-    api_key = get_groq_api_key()
-    payload = {
-        "model": "llama-3.3-70b-versatile",
-        "response_format": {"type": "json_object"},
-        "messages": [
-            {
-                "role": "system",
-                "content": (
-                    "You are a strict school timetable allocator. "
-                    "Return ONLY valid JSON with keys: assigned_teacher_id (string), reason (string)."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
-        "temperature": 0.2,
-    }
-    headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
-
-    response = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        json=payload,
-        headers=headers,
-        timeout=30,
-    )
-    response.raise_for_status()
-    content = response.json()["choices"][0]["message"]["content"].strip()
-    if content.startswith("```json"):
-        content = content[7:]
-    if content.endswith("```"):
-        content = content[:-3]
-    content = content.strip()
+def _parse_class_number(class_name: str) -> int | None:
+    """
+    Extract the first integer from class labels like "10A", "5", or "Class 7".
+    """
+    if not class_name:
+        return None
+    match = re.search(r"\d+", str(class_name))
+    if not match:
+        return None
+    return int(match.group(0))
 
 
-    try:
-        return json.loads(content)
-    except json.JSONDecodeError as error:
-        raise HTTPException(
-            status_code=502,
-            detail=f"Groq returned non-JSON response: {content}",
-        ) from error
+def _tier_for_class_number(class_number: int) -> str | None:
+    if 1 <= class_number <= 5:
+        return "primary"
+    if 6 <= class_number <= 8:
+        return "middle"
+    if 9 <= class_number <= 12:
+        return "secondary"
+    return None
+
+
+def _tier_for_class_name(class_name: str) -> str:
+    parsed = _parse_class_number(class_name)
+    if parsed is None:
+        raise HTTPException(status_code=400, detail=f"Invalid class_name: {class_name}")
+    tier = _tier_for_class_number(parsed)
+    if tier is None:
+        raise HTTPException(status_code=400, detail=f"Class out of supported range: {class_name}")
+    return tier
 
 
 @router.post("/find-covering-teacher")
 def find_covering_teacher(payload: CoveringTeacherRequest):
     """
-    Pick the best free teacher for a class using constraints + Groq reasoning.
+    Pick the best free teacher for a class using tier constraints + fairness.
     """
     supabase = get_supabase_client()
     week_start = _get_week_start(payload.date)
 
+    target_tier = _tier_for_class_name(payload.class_name)
+
     all_teachers_response = (
         supabase.table("teachers")
-        .select("id,name,subjects,max_extra")
+        .select("id,name,max_extra")
         .eq("role", "teacher")
         .order("id")
         .execute()
@@ -110,7 +99,7 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
 
     busy_response = (
         supabase.table("timetable")
-        .select("teacher_id,class_name,subject")
+        .select("teacher_id")
         .eq("day", payload.day)
         .eq("period_number", payload.period_number)
         .execute()
@@ -121,11 +110,34 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     if not free_teachers:
         raise HTTPException(status_code=400, detail="No free teachers available")
 
-    subject_matched = [
-        teacher
-        for teacher in free_teachers
-        if payload.subject in (teacher.get("subjects") or [])
+    free_teacher_ids = [t["id"] for t in free_teachers]
+    teacher_tiers: dict[str, set[str]] = {}
+    if free_teacher_ids:
+        teacher_class_rows = (
+            supabase.table("timetable")
+            .select("teacher_id,class_name")
+            .in_("teacher_id", free_teacher_ids)
+            .execute()
+        )
+        for row in (teacher_class_rows.data or []):
+            t_id = row.get("teacher_id")
+            if not t_id:
+                continue
+            tier_set = teacher_tiers.setdefault(str(t_id), set())
+            class_name = row.get("class_name")
+            class_number = _parse_class_number(class_name)
+            tier = _tier_for_class_number(class_number) if class_number is not None else None
+            if tier:
+                tier_set.add(tier)
+
+    tier_eligible_teachers = [
+        t for t in free_teachers if target_tier in teacher_tiers.get(str(t["id"]), set())
     ]
+    if not tier_eligible_teachers:
+        raise HTTPException(
+            status_code=400,
+            detail="No eligible teachers for the required class tier",
+        )
 
     tracker_response = (
         supabase.table("extra_period_tracker")
@@ -135,8 +147,8 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     )
     extra_map = {row["teacher_id"]: row["extra_count"] for row in (tracker_response.data or [])}
 
-    eligible_teachers = []
-    for teacher in free_teachers:
+    eligible_teachers: list[dict[str, Any]] = []
+    for teacher in tier_eligible_teachers:
         used = extra_map.get(teacher["id"], 0)
         limit = _teacher_extra_limit(teacher)
         if used < limit:
@@ -144,63 +156,27 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
                 {
                     "id": teacher["id"],
                     "name": teacher["name"],
-                    "subjects": teacher.get("subjects") or [],
                     "extra_used_this_week": used,
                     "extra_limit": limit,
-                    "subject_match": payload.subject in (teacher.get("subjects") or []),
                 }
             )
 
     if not eligible_teachers:
         raise HTTPException(status_code=400, detail="No eligible teachers under extra-period limits")
 
-    prompt = f"""
-School: Delhi Public School (Demo)
-Need to assign a covering teacher for:
-- day: {payload.day}
-- date: {payload.date}
-- class: {payload.class_name}
-- period_number: {payload.period_number}
-- subject: {payload.subject}
-- room: {payload.room}
-- original_teacher_id: {payload.original_teacher_id}
+    eligible_teachers.sort(key=lambda t: (t["extra_used_this_week"], str(t["id"])))
+    assigned = eligible_teachers[0]
 
-Busy teacher IDs this period:
-{sorted(list(busy_teacher_ids))}
-
-Teachers who are free this period and eligible by max extra rules:
-{json.dumps(eligible_teachers, indent=2)}
-
-Teachers with subject match ({payload.subject}):
-{json.dumps([t for t in eligible_teachers if t["subject_match"]], indent=2)}
-
-Rules:
-1) Must choose from eligible teachers list only.
-2) Strongly prefer subject match.
-3) Prefer teacher with lower extra_used_this_week.
-4) Return only JSON: {{"assigned_teacher_id": "T01", "reason": "string"}}
-""".strip()
-
-    groq_result = _get_json_from_groq(prompt)
-    assigned_teacher_id = groq_result.get("assigned_teacher_id")
-    # if it's a string that is a number, cast it
-    if isinstance(assigned_teacher_id, str) and assigned_teacher_id.isdigit():
-        assigned_teacher_id = int(assigned_teacher_id)
-        
-    reason = groq_result.get("reason", "")
-
-    eligible_ids = {teacher["id"] for teacher in eligible_teachers}
-    if assigned_teacher_id not in eligible_ids:
-        raise HTTPException(
-            status_code=502,
-            detail="Groq selected an invalid teacher not in eligible list",
-        )
+    reason = (
+        f"Fairness: selected teacher with the lowest extra_count this week "
+        f"({assigned['extra_used_this_week']}/{assigned['extra_limit']}) "
+        f"for tier '{target_tier}'."
+    )
 
     return {
-        "assigned_teacher_id": assigned_teacher_id,
+        "assigned_teacher_id": assigned["id"],
         "reason": reason,
         "eligible_teachers": eligible_teachers,
-        "subject_matched_teacher_ids": [t["id"] for t in subject_matched],
         "week_start": week_start,
     }
 
