@@ -89,8 +89,6 @@ def get_teachers():
 @router.get("/timetable/upcoming-periods")
 def get_upcoming_periods(
     minutes_ahead: int = Query(5, ge=0),
-    test_hour: int | None = Query(None, ge=0, le=23),
-    test_minute: int | None = Query(None, ge=0, le=59),
 ) -> list[dict]:
     """
     Return timetable entries for classes whose period starts within `minutes_ahead`.
@@ -99,8 +97,6 @@ def get_upcoming_periods(
 
     ist = ZoneInfo("Asia/Kolkata")
     now = datetime.now(tz=ist)
-    if test_hour is not None and test_minute is not None:
-        now = now.replace(hour=test_hour, minute=test_minute, second=0, microsecond=0)
     window_end = now + timedelta(minutes=minutes_ahead)
     today_day_name = now.strftime("%A")
     tomorrow_day_name = (now + timedelta(days=1)).strftime("%A")
