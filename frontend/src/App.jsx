@@ -12,12 +12,7 @@ function App() {
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [page, setPage] = useState('home');
-  const currentDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-
-  // If school is closed (or it's weekend), we force Monday Period 1 for demo purposes.
-  const displayDay = (activePeriodInfo.isClosed || currentDay === 'Sunday' || currentDay === 'Saturday')
-    ? 'Monday'
-    : currentDay;
+  const displayDay = 'Monday';
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500/30">
