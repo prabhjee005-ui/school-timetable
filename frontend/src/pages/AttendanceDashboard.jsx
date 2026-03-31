@@ -1,15 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-} from 'recharts';
 import api from '../api';
 
 export default function AttendanceDashboard({ onBack }) {
@@ -38,30 +27,50 @@ export default function AttendanceDashboard({ onBack }) {
     fetchStats();
   }, []);
 
-  const absentTeachersData = useMemo(
-    () => (stats.most_absent_teachers || []).slice(0, 10),
+  const totalAbsencesThisMonth = useMemo(() => {
+    const monthKey = new Date().toISOString().slice(0, 7); // YYYY-MM
+    return (stats.absences_by_week || []).reduce((sum, row) => {
+      const weekStart = row?.week_start || '';
+      if (weekStart.startsWith(monthKey)) {
+        return sum + Number(row?.absence_count || 0);
+      }
+      return sum;
+    }, 0);
+  }, [stats.absences_by_week]);
+
+  const mostAbsentTeacher = useMemo(
+    () => stats.most_absent_teachers?.[0]?.teacher_name || '-',
     [stats.most_absent_teachers],
   );
-  const absencesByWeekData = useMemo(
-    () => stats.absences_by_week || [],
-    [stats.absences_by_week],
-  );
-  const disruptedPeriodsData = useMemo(
-    () => stats.most_disrupted_periods || [],
-    [stats.most_disrupted_periods],
-  );
-  const coveringWorkloadData = useMemo(
-    () => (stats.covering_workload || []).slice(0, 10),
-    [stats.covering_workload],
-  );
 
-  const chartCard = (title, subtitle, chart) => (
-    <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl shadow-xl p-4 sm:p-6">
-      <h4 className="text-base sm:text-lg font-semibold text-slate-100">{title}</h4>
-      <p className="text-xs sm:text-sm text-slate-400 mt-1">{subtitle}</p>
-      <div className="h-72 sm:h-80 mt-4">{chart}</div>
-    </div>
-  );
+  const mostDisruptedPeriod = useMemo(() => {
+    const period = stats.most_disrupted_periods?.[0]?.period_number;
+    return period ? `Period ${period}` : '-';
+  }, [stats.most_disrupted_periods]);
+
+  const teacherTableRows = useMemo(() => {
+    const absenceMap = new Map();
+    const coverMap = new Map();
+
+    (stats.most_absent_teachers || []).forEach((row) => {
+      const name = row?.teacher_name || 'Unknown';
+      absenceMap.set(name, Number(row?.absence_count || 0));
+    });
+
+    (stats.covering_workload || []).forEach((row) => {
+      const name = row?.teacher_name || 'Unknown';
+      coverMap.set(name, Number(row?.cover_count || 0));
+    });
+
+    const allTeachers = new Set([...absenceMap.keys(), ...coverMap.keys()]);
+    return [...allTeachers]
+      .map((teacherName) => ({
+        teacher_name: teacherName,
+        absences: absenceMap.get(teacherName) || 0,
+        cover_periods_taken: coverMap.get(teacherName) || 0,
+      }))
+      .sort((a, b) => b.absences - a.absences || a.teacher_name.localeCompare(b.teacher_name));
+  }, [stats.most_absent_teachers, stats.covering_workload]);
 
   return (
     <div className="space-y-6">
@@ -92,62 +101,56 @@ export default function AttendanceDashboard({ onBack }) {
       )}
 
       {!loading && !error && (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-          {chartCard(
-            'Most Absent Teachers',
-            'Teachers with highest absence count',
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={absentTeachersData} margin={{ top: 8, right: 8, left: 0, bottom: 32 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="teacher_name" angle={-20} textAnchor="end" interval={0} height={60} stroke="#94a3b8" />
-                <YAxis allowDecimals={false} stroke="#94a3b8" />
-                <Tooltip />
-                <Bar dataKey="absence_count" name="Absences" fill="#6366f1" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>,
-          )}
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-5">
+              <p className="text-xs uppercase tracking-wide text-slate-400">Total Absences This Month</p>
+              <p className="mt-2 text-3xl font-bold text-slate-100">{totalAbsencesThisMonth}</p>
+            </div>
+            <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-5">
+              <p className="text-xs uppercase tracking-wide text-slate-400">Most Absent Teacher</p>
+              <p className="mt-2 text-xl font-semibold text-slate-100">{mostAbsentTeacher}</p>
+            </div>
+            <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl p-5">
+              <p className="text-xs uppercase tracking-wide text-slate-400">Most Disrupted Period</p>
+              <p className="mt-2 text-xl font-semibold text-slate-100">{mostDisruptedPeriod}</p>
+            </div>
+          </div>
 
-          {chartCard(
-            'Absences by Week',
-            'Weekly absence totals over the last 8 weeks',
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={absencesByWeekData} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="week_start" stroke="#94a3b8" />
-                <YAxis allowDecimals={false} stroke="#94a3b8" />
-                <Tooltip />
-                <Line type="monotone" dataKey="absence_count" name="Absences" stroke="#22d3ee" strokeWidth={3} dot={{ r: 3 }} />
-              </LineChart>
-            </ResponsiveContainer>,
-          )}
-
-          {chartCard(
-            'Most Disrupted Periods',
-            'Periods with the most recorded disruptions',
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={disruptedPeriodsData} margin={{ top: 8, right: 8, left: 0, bottom: 8 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="period_number" stroke="#94a3b8" />
-                <YAxis allowDecimals={false} stroke="#94a3b8" />
-                <Tooltip />
-                <Bar dataKey="disruption_count" name="Disruptions" fill="#f59e0b" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>,
-          )}
-
-          {chartCard(
-            'Covering Teacher Workload',
-            'Teachers taking the most cover periods',
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={coveringWorkloadData} margin={{ top: 8, right: 8, left: 0, bottom: 32 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="teacher_name" angle={-20} textAnchor="end" interval={0} height={60} stroke="#94a3b8" />
-                <YAxis allowDecimals={false} stroke="#94a3b8" />
-                <Tooltip />
-                <Bar dataKey="cover_count" name="Cover Count" fill="#10b981" radius={[6, 6, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>,
-          )}
+          <div className="bg-slate-800/80 border border-slate-700/50 rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 border-b border-slate-700/50">
+              <h4 className="text-lg font-semibold text-slate-100">Teacher Attendance Summary</h4>
+              <p className="text-sm text-slate-400 mt-1">Sorted by highest absences first</p>
+            </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-900/40 text-xs uppercase tracking-wide text-slate-400 border-b border-slate-700/50">
+                    <th className="px-5 py-3 font-medium">Teacher Name</th>
+                    <th className="px-5 py-3 font-medium">Absences</th>
+                    <th className="px-5 py-3 font-medium">Cover Periods Taken</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-700/50">
+                  {teacherTableRows.length === 0 ? (
+                    <tr>
+                      <td colSpan="3" className="px-5 py-6 text-center text-slate-500">
+                        No attendance data available.
+                      </td>
+                    </tr>
+                  ) : (
+                    teacherTableRows.map((row) => (
+                      <tr key={row.teacher_name} className="hover:bg-slate-700/20 transition-colors">
+                        <td className="px-5 py-3 text-slate-200 font-medium">{row.teacher_name}</td>
+                        <td className="px-5 py-3 text-slate-300">{row.absences}</td>
+                        <td className="px-5 py-3 text-slate-300">{row.cover_periods_taken}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       )}
     </div>
