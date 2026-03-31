@@ -7,6 +7,7 @@ import AdjustmentsTable from './components/AdjustmentsTable';
 import LeaveRequest from './pages/LeaveRequest';
 import PrincipalView from './pages/PrincipalView';
 import AttendanceDashboard from './pages/AttendanceDashboard';
+import SwapRequest from './pages/SwapRequest';
 import './App.css';
 
 function App() {
@@ -52,6 +53,16 @@ function App() {
           >
             Principal View
           </button>
+          <button
+            onClick={() => setPage('swap')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+              page === 'swap'
+                ? 'bg-indigo-500 text-white border-indigo-400'
+                : 'bg-slate-900/50 text-slate-200 border-slate-700/50 hover:bg-slate-700/50'
+            }`}
+          >
+            Swap Request
+          </button>
         </div>
 
         {page === 'home' && (
@@ -90,6 +101,12 @@ function App() {
         {page === 'attendance-dashboard' && (
           <div className="mt-2">
             <AttendanceDashboard onBack={() => setPage('principal')} />
+          </div>
+        )}
+
+        {page === 'swap' && (
+          <div className="mt-2">
+            <SwapRequest />
           </div>
         )}
       </main>
