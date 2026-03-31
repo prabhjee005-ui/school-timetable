@@ -14,9 +14,53 @@ export default function LeaveRequest() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
 
+  const [teacherIdValid, setTeacherIdValid] = useState(false);
+  const [teacherIdError, setTeacherIdError] = useState(null);
+  const [teacherIdChecking, setTeacherIdChecking] = useState(false);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === 'teacher_id') {
+      setTeacherIdValid(false);
+      setTeacherIdError(null);
+    }
+  };
+
+  const handleTeacherIdBlur = async () => {
+    const trimmedId = formData.teacher_id.trim();
+    if (!trimmedId) {
+      setTeacherIdValid(false);
+      setTeacherIdError(null);
+      return;
+    }
+
+    setTeacherIdChecking(true);
+    setTeacherIdError(null);
+    setTeacherIdValid(false);
+
+    try {
+      const response = await api.get(`/teachers/verify/${encodeURIComponent(trimmedId)}`);
+      const data = response.data;
+
+      if (data.valid) {
+        setTeacherIdValid(true);
+        setFormData((prev) => ({
+          ...prev,
+          teacher_id: trimmedId,
+          teacher_name: data.name || prev.teacher_name,
+        }));
+      } else {
+        setTeacherIdValid(false);
+        setTeacherIdError(data.message || 'Invalid Teacher ID');
+      }
+    } catch {
+      setTeacherIdValid(false);
+      setTeacherIdError('Invalid Teacher ID');
+    } finally {
+      setTeacherIdChecking(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -41,6 +85,8 @@ export default function LeaveRequest() {
         to_date: '',
         reason: '',
       });
+      setTeacherIdValid(false);
+      setTeacherIdError(null);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to submit leave request.');
     } finally {
@@ -71,15 +117,26 @@ export default function LeaveRequest() {
 
           <div>
             <label className="block text-xs font-medium text-slate-400 mb-1">Teacher ID</label>
-            <input
-              name="teacher_id"
-              type="text"
-              required
-              value={formData.teacher_id}
-              onChange={handleChange}
-              placeholder="e.g. T01"
-              className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
-            />
+            <div className="relative flex items-center">
+              <input
+                name="teacher_id"
+                type="text"
+                required
+                value={formData.teacher_id}
+                onChange={handleChange}
+                onBlur={handleTeacherIdBlur}
+                placeholder="e.g. T01"
+                className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 pr-8 text-sm text-slate-200 outline-none focus:border-indigo-500"
+              />
+              {teacherIdValid && !teacherIdChecking && (
+                <span className="absolute right-2 text-emerald-400 text-sm font-semibold">
+                  ✓
+                </span>
+              )}
+            </div>
+            {teacherIdError && (
+              <p className="mt-1 text-xs text-red-400">Invalid Teacher ID</p>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -122,7 +179,7 @@ export default function LeaveRequest() {
 
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !teacherIdValid}
             className="w-full bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg py-2.5 px-4 text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Submitting...' : 'Submit Leave'}

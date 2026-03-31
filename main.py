@@ -5,6 +5,7 @@ from routers.absences import router as absences_router
 from routers.ai_allocation import router as ai_allocation_router
 from routers.leave_requests import router as leave_requests_router
 from routers.periods import router as periods_router
+from routers.teachers import router as teachers_router
 from routers.timetable import router as timetable_router
 
 
@@ -15,8 +16,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
-        "http://127.0.0.1:5173", 
-        "https://school-timetable-ten.vercel.app"
+        "http://127.0.0.1:5173",
+        "https://school-timetable-ten.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -28,6 +29,7 @@ app.include_router(timetable_router)
 app.include_router(absences_router)
 app.include_router(ai_allocation_router)
 app.include_router(leave_requests_router)
+app.include_router(teachers_router)
 
 
 @app.get("/")
