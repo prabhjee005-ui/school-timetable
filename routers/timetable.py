@@ -175,38 +175,3 @@ def get_upcoming_periods(
         )
 
     return results
-
-
-@router.get("/timetable/debug-periods")
-def debug_periods():
-    """
-    Temporary debug endpoint to inspect today's IST day match and raw timetable data.
-    """
-    supabase = get_supabase_client()
-    ist = ZoneInfo("Asia/Kolkata")
-    now_ist = datetime.now(tz=ist)
-    today_day_name = now_ist.strftime("%A")
-
-    timetable_response = (
-        supabase.table("timetable")
-        .select("*")
-        .eq("day", today_day_name)
-        .order("period_number")
-        .execute()
-    )
-    rows = timetable_response.data or []
-    periods_found = sorted(
-        {
-            row.get("period_number")
-            for row in rows
-            if row.get("period_number") is not None
-        }
-    )
-
-    return {
-        "current_ist_time": now_ist.isoformat(),
-        "today_day_name_ist": today_day_name,
-        "periods_found": periods_found,
-        "total_rows": len(rows),
-        "rows": rows,
-    }
