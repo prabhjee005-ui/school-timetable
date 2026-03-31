@@ -6,6 +6,7 @@ import AIAllocationPanel from './components/AIAllocationPanel';
 import AdjustmentsTable from './components/AdjustmentsTable';
 import LeaveRequest from './pages/LeaveRequest';
 import PrincipalView from './pages/PrincipalView';
+import AttendanceDashboard from './pages/AttendanceDashboard';
 import './App.css';
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
           <button
             onClick={() => setPage('principal')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
-              page === 'principal'
+              page === 'principal' || page === 'attendance-dashboard'
                 ? 'bg-indigo-500 text-white border-indigo-400'
                 : 'bg-slate-900/50 text-slate-200 border-slate-700/50 hover:bg-slate-700/50'
             }`}
@@ -82,7 +83,13 @@ function App() {
 
         {page === 'principal' && (
           <div className="mt-2">
-            <PrincipalView />
+            <PrincipalView onOpenDashboard={() => setPage('attendance-dashboard')} />
+          </div>
+        )}
+
+        {page === 'attendance-dashboard' && (
+          <div className="mt-2">
+            <AttendanceDashboard onBack={() => setPage('principal')} />
           </div>
         )}
       </main>

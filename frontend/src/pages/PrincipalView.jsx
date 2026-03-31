@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../api';
 
-export default function PrincipalView() {
+export default function PrincipalView({ onOpenDashboard }) {
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -115,13 +115,22 @@ export default function PrincipalView() {
           <h3 className="text-xl font-bold text-slate-100">Principal View</h3>
           <p className="text-sm text-slate-400 mt-1">Review and approve/reject leave requests.</p>
         </div>
-        <button
-          onClick={fetchLeaveRequests}
-          className="px-4 py-2 rounded-lg text-sm font-medium bg-slate-900/50 border border-slate-700/50 text-slate-200 hover:bg-slate-700/50 transition-colors disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? 'Refreshing...' : 'Refresh'}
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenDashboard}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-indigo-500/20 border border-indigo-500/40 text-indigo-200 hover:bg-indigo-500/30 transition-colors"
+          >
+            📊 Attendance Dashboard
+          </button>
+          <button
+            onClick={fetchLeaveRequests}
+            className="px-4 py-2 rounded-lg text-sm font-medium bg-slate-900/50 border border-slate-700/50 text-slate-200 hover:bg-slate-700/50 transition-colors disabled:opacity-50"
+            disabled={loading}
+          >
+            {loading ? 'Refreshing...' : 'Refresh'}
+          </button>
+        </div>
       </div>
 
       <div className="px-6 py-4 border-b border-slate-700/50 flex flex-wrap gap-2">

@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from routers.analytics import router as analytics_router
 from routers.absences import router as absences_router
 from routers.ai_allocation import router as ai_allocation_router
 from routers.leave_requests import router as leave_requests_router
@@ -30,6 +31,7 @@ app.include_router(absences_router)
 app.include_router(ai_allocation_router)
 app.include_router(leave_requests_router)
 app.include_router(teachers_router)
+app.include_router(analytics_router, prefix="/analytics")
 
 
 @app.get("/")
