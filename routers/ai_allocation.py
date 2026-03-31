@@ -145,7 +145,9 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
         .eq("week_start", week_start)
         .execute()
     )
-    extra_map = {row["teacher_id"]: row["extra_count"] for row in (tracker_response.data or [])}
+    extra_map = {
+        row["teacher_id"]: row["extra_count"] for row in (tracker_response.data or [])
+    }
 
     eligible_teachers: list[dict[str, Any]] = []
     for teacher in tier_eligible_teachers:
