@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException, Query
 from database import get_supabase_client
@@ -80,7 +81,8 @@ def get_upcoming_periods(minutes_ahead: int = Query(5, ge=0)) -> list[dict]:
     """
     supabase = get_supabase_client()
 
-    now = datetime.now()
+    ist = ZoneInfo("Asia/Kolkata")
+    now = datetime.now(tz=ist)
     window_end = now + timedelta(minutes=minutes_ahead)
     today_day_name = now.strftime("%A")  # e.g. "Monday"
 
@@ -99,7 +101,7 @@ def get_upcoming_periods(minutes_ahead: int = Query(5, ge=0)) -> list[dict]:
             continue
 
         start_time = datetime.strptime(start_time_str, "%H:%M:%S").time()
-        start_dt = datetime.combine(now.date(), start_time)
+        start_dt = datetime.combine(now.date(), start_time).replace(tzinfo=ist)
 
         # Handle the case where the window crosses midnight.
         if start_dt < now and window_end.date() != now.date():
@@ -135,10 +137,13 @@ def get_upcoming_periods(minutes_ahead: int = Query(5, ge=0)) -> list[dict]:
     results: list[dict] = []
     for row in rows:
         teachers_obj = row.get("teachers") or {}
+        teacher_email = teachers_obj.get("email")
+        if teacher_email is None:
+            continue
         results.append(
             {
                 "teacher_name": teachers_obj.get("name"),
-                "teacher_email": teachers_obj.get("email"),
+                "teacher_email": teacher_email,
                 "period_number": row["period_number"],
                 "class_name": row["class_name"],
                 "subject": row["subject"],
