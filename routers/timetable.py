@@ -1,3 +1,5 @@
+from datetime import time, datetime, timedelta
+from zoneinfo import ZoneInfo
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Query
 from database import get_supabase_client
@@ -28,6 +30,20 @@ def bulk_save_timetable(payload: BulkTimetablePayload):
     data = [entry.model_dump() for entry in payload.entries]
     response = supabase.table("timetable").upsert(data, on_conflict="day,period_number,class_name").execute()
     return {"message": f"Successfully updated {len(data)} entries", "count": len(response.data or [])}
+
+@router.post("/timetable")
+def create_timetable_entry(entry: TimetableEntry):
+    supabase = get_supabase_client()
+    response = supabase.table("timetable").upsert(entry.model_dump(), on_conflict="day,period_number,class_name").execute()
+    return {"message": "Entry created/updated", "data": response.data[0] if response.data else None}
+
+@router.put("/timetable/{entry_id}")
+def update_timetable_entry(entry_id: int, entry: TimetableEntry):
+    supabase = get_supabase_client()
+    response = supabase.table("timetable").update(entry.model_dump()).eq("id", entry_id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="Entry not found")
+    return {"message": "Entry updated", "data": response.data[0]}
 
 
 PERIOD_START_TIMES: dict[int, time] = {

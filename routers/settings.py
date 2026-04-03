@@ -13,11 +13,9 @@ def get_setting(setting_id: str):
     supabase = get_supabase_client()
     response = supabase.table("settings").select("value").eq("id", setting_id).execute()
     if not response.data:
-        # Return default if not found
+        # Return default school_config
         if setting_id == "school_config":
             return {"school_name": "My School", "num_periods": 8, "recess_after_period": 4, "class_names": ["6A", "6B", "7A", "7B", "8A", "8B", "9A", "9B", "10A", "10B"]}
-        elif setting_id == "ai_config":
-            return {"prefer_subject_match": True, "avoid_double_assignments": True, "max_extra_periods": 3}
         raise HTTPException(status_code=404, detail="Setting not found")
     return response.data[0]["value"]
 

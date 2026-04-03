@@ -59,7 +59,7 @@ export default function AdminDashboard() {
     try {
       const [schoolRes, aiRes, teachersRes, timetableRes] = await Promise.all([
         api.get('/settings/school_config'),
-        api.get('/settings/ai_config'),
+        api.get('/ai-settings/ai_config'),
         api.get('/teachers'),
         api.get('/timetable/all')
       ]);
@@ -485,9 +485,11 @@ export default function AdminDashboard() {
               <button 
                 onClick={async () => {
                   try {
-                    await api.post('/settings/ai_config', { value: aiConfig });
-                    alert('AI preferences saved!');
-                  } catch(err) { alert('Save failed'); }
+                    await api.post('/ai-settings/ai_config', { value: aiConfig });
+                    alert('AI preferences saved and synced!');
+                  } catch(err) { 
+                    alert(err.response?.data?.detail || 'Failed to save AI preferences'); 
+                  }
                 }}
                 className="w-full py-4 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-purple-500/20"
               >

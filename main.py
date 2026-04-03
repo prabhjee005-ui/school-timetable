@@ -9,6 +9,7 @@ from routers.periods import router as periods_router
 from routers.teachers import router as teachers_router
 from routers.timetable import router as timetable_router
 from routers.settings import router as settings_router
+from routers.ai_settings import router as ai_settings_router
 from routers.swap_requests import router as swap_requests_router
 
 app = FastAPI(title="AI School Timetable Management System")
@@ -34,6 +35,7 @@ app.include_router(ai_allocation_router)
 app.include_router(leave_requests_router)
 app.include_router(teachers_router)
 app.include_router(settings_router)
+app.include_router(ai_settings_router)
 app.include_router(swap_requests_router, prefix="/swap-requests")
 app.include_router(analytics_router, prefix="/analytics")
 
