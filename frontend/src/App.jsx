@@ -15,7 +15,8 @@ import './App.css';
 
 function App() {
   // Use hooks first and unconditionally at the top level
-  const { user } = useAuth();
+  // const { user } = useAuth(); // DEV: auth disabled
+  const user = { id: 'DEV_ADMIN', role: 'principal' }; // DEV: auth disabled
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [page, setPage] = useState('home');
@@ -50,9 +51,11 @@ function App() {
     }
   }, [page, isPrincipal, user]);
 
+  /* // DEV: auth disabled
   if (!user) {
     return <LoginPage />;
   }
+  */
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500/30">
