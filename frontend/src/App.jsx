@@ -14,10 +14,12 @@ import SwapRequest from './pages/SwapRequest';
 import './App.css';
 
 function App() {
+  // Use hooks first and unconditionally at the top level
   const { user } = useAuth();
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [page, setPage] = useState('home');
+
   const currentDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
   const displayDay = currentDay;
 
@@ -39,18 +41,18 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!user) {
-    return <LoginPage />;
-  }
-
-  const isPrincipal = user.role === 'principal';
+  const isPrincipal = user?.role === 'principal';
 
   // Redirect teachers away from principal-only pages
   useEffect(() => {
-    if (!isPrincipal && (page === 'principal' || page === 'attendance-dashboard')) {
+    if (user && !isPrincipal && (page === 'principal' || page === 'attendance-dashboard')) {
       setPage('home');
     }
-  }, [page, isPrincipal]);
+  }, [page, isPrincipal, user]);
+
+  if (!user) {
+    return <LoginPage />;
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500/30">
