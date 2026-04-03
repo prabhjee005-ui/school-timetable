@@ -1,10 +1,33 @@
-from datetime import datetime, time, timedelta
-from zoneinfo import ZoneInfo
-
+from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Query
 from database import get_supabase_client
 
 router = APIRouter(tags=["Timetable"])
+
+class TimetableEntry(BaseModel):
+    day: str
+    period_number: int
+    class_name: str
+    teacher_id: str
+    subject: str
+    room: str | None = None
+
+class BulkTimetablePayload(BaseModel):
+    entries: list[TimetableEntry]
+
+@router.get("/timetable/all")
+def get_all_timetable():
+    supabase = get_supabase_client()
+    response = supabase.table("timetable").select("*").execute()
+    return {"entries": response.data or []}
+
+@router.post("/timetable/bulk")
+def bulk_save_timetable(payload: BulkTimetablePayload):
+    supabase = get_supabase_client()
+    # upsert matches on (day, period_number, class_name) due to unique constraint
+    data = [entry.model_dump() for entry in payload.entries]
+    response = supabase.table("timetable").upsert(data, on_conflict="day,period_number,class_name").execute()
+    return {"message": f"Successfully updated {len(data)} entries", "count": len(response.data or [])}
 
 
 PERIOD_START_TIMES: dict[int, time] = {
