@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { CalendarDays, Clock } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { CalendarDays, Clock, LogOut, User } from 'lucide-react';
 
 export default function Header() {
   const [time, setTime] = useState(new Date());
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -21,11 +23,32 @@ export default function Header() {
               AI Timetable System
             </h1>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
-            <Clock className="h-4 w-4" />
-            <span className="font-medium font-mono text-sm tracking-wide">
-              {time.toLocaleTimeString()}
-            </span>
+
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
+              <Clock className="h-4 w-4" />
+              <span className="font-medium font-mono text-sm tracking-wide">
+                {time.toLocaleTimeString()}
+              </span>
+            </div>
+
+            {user && (
+              <div className="flex items-center gap-3 pl-4 border-l border-slate-700/50">
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                  <User className="h-4 w-4 text-indigo-400" />
+                  <span className="text-sm font-bold text-indigo-200">
+                    {user.id}
+                  </span>
+                </div>
+                <button
+                  onClick={logout}
+                  className="p-2 text-slate-400 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-all"
+                  title="Logout"
+                >
+                  <LogOut className="h-5 w-5" />
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

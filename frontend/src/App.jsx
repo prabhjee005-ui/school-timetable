@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from './context/AuthContext';
 import api from './api';
 import Header from './components/Header';
+import LoginPage from './components/LoginPage';
 import CurrentPeriodCard from './components/CurrentPeriodCard';
 import TimetableTable from './components/TimetableTable';
 import AIAllocationPanel from './components/AIAllocationPanel';
@@ -12,6 +14,7 @@ import SwapRequest from './pages/SwapRequest';
 import './App.css';
 
 function App() {
+  const { user } = useAuth();
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [page, setPage] = useState('home');
@@ -36,6 +39,19 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  if (!user) {
+    return <LoginPage />;
+  }
+
+  const isPrincipal = user.role === 'principal';
+
+  // Redirect teachers away from principal-only pages
+  useEffect(() => {
+    if (!isPrincipal && (page === 'principal' || page === 'attendance-dashboard')) {
+      setPage('home');
+    }
+  }, [page, isPrincipal]);
+
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500/30">
       <Header />
@@ -52,6 +68,8 @@ function App() {
           >
             Timetable
           </button>
+          
+          {/* Leave and Swap shown for everyone (Principal has full access) */}
           <button
             onClick={() => setPage('leave')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
@@ -63,16 +81,6 @@ function App() {
             Leave Request
           </button>
           <button
-            onClick={() => setPage('principal')}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
-              page === 'principal' || page === 'attendance-dashboard'
-                ? 'bg-indigo-500 text-white border-indigo-400'
-                : 'bg-slate-900/50 text-slate-200 border-slate-700/50 hover:bg-slate-700/50'
-            }`}
-          >
-            Principal View
-          </button>
-          <button
             onClick={() => setPage('swap')}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
               page === 'swap'
@@ -82,6 +90,20 @@ function App() {
           >
             Swap Request
           </button>
+
+          {/* Principal View shown ONLY for P01 */}
+          {isPrincipal && (
+            <button
+              onClick={() => setPage('principal')}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${
+                page === 'principal' || page === 'attendance-dashboard'
+                  ? 'bg-indigo-500 text-white border-indigo-400'
+                  : 'bg-slate-900/50 text-slate-200 border-slate-700/50 hover:bg-slate-700/50'
+              }`}
+            >
+              Principal View
+            </button>
+          )}
         </div>
 
         {page === 'home' && (
@@ -111,13 +133,13 @@ function App() {
           </div>
         )}
 
-        {page === 'principal' && (
+        {page === 'principal' && isPrincipal && (
           <div className="mt-2">
             <PrincipalView onOpenDashboard={() => setPage('attendance-dashboard')} />
           </div>
         )}
 
-        {page === 'attendance-dashboard' && (
+        {page === 'attendance-dashboard' && isPrincipal && (
           <div className="mt-2">
             <AttendanceDashboard onBack={() => setPage('principal')} />
           </div>
