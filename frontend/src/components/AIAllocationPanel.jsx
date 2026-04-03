@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Bot, Sparkles, Check, AlertCircle, Loader2 } from 'lucide-react';
+import { Bot, Sparkles, Check, AlertCircle, Loader2, FileDown } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import api from '../api';
 
 export default function AIAllocationPanel({ onAdjustmentCreated }) {
@@ -68,14 +70,134 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
     }
   };
 
+  const handleExportPDF = async () => {
+    setLoading(true);
+    try {
+      // 1. Fetch current adjustments for the selected date
+      const adjustmentsRes = await api.get(`/adjustments/today?query_date=${formData.date}`);
+      const adjustments = adjustmentsRes.data.adjustments || [];
+
+      if (adjustments.length === 0) {
+        alert("No adjustments found for the selected date to export.");
+        return;
+      }
+
+      // 2. Fetch all teachers for name resolution
+      const teachersRes = await api.get('/teachers');
+      const teachers = teachersRes.data.teachers || [];
+      const teacherMap = {};
+      teachers.forEach(t => { teacherMap[t.id] = t.name; });
+
+      // 3. Prepare PDF
+      const doc = new jsPDF('landscape');
+      const dateParts = formData.date.split('-');
+      const formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+      // Title and Date
+      doc.setFontSize(20);
+      doc.setTextColor(40);
+      doc.text("ADJUSTMENT CHART", 14, 15);
+      
+      doc.setFontSize(11);
+      doc.setTextColor(100);
+      doc.text(`Date: ${formattedDate} (${formData.day})`, 14, 22);
+
+      // Define columns: Absent Teacher, Period 1-4, RECESS, Period 5-8
+      const columns = [
+        { header: 'Absent Teacher', dataKey: 'absent' },
+        { header: 'Period 1', dataKey: 'p1' },
+        { header: 'Period 2', dataKey: 'p2' },
+        { header: 'Period 3', dataKey: 'p3' },
+        { header: 'Period 4', dataKey: 'p4' },
+        { header: 'RECESS', dataKey: 'recess' },
+        { header: 'Period 5', dataKey: 'p5' },
+        { header: 'Period 6', dataKey: 'p6' },
+        { header: 'Period 7', dataKey: 'p7' },
+        { header: 'Period 8', dataKey: 'p8' },
+      ];
+
+      // Group adjustments by original_teacher_id (absent teacher)
+      const rowsMap = {};
+      adjustments.forEach(adj => {
+        const tid = adj.original_teacher_id;
+        if (!rowsMap[tid]) {
+          rowsMap[tid] = { 
+            absent: teacherMap[tid] || tid, 
+            p1: '', p2: '', p3: '', p4: '', recess: 'RECESS', p5: '', p6: '', p7: '', p8: '' 
+          };
+        }
+        
+        const periodKey = `p${adj.period_number}`;
+        const coveringName = teacherMap[adj.covering_teacher_id] || adj.covering_teacher_id;
+        rowsMap[tid][periodKey] = `${adj.class_name}\n${coveringName}`;
+      });
+
+      const body = Object.values(rowsMap);
+
+      autoTable(doc, {
+        startY: 30,
+        columns: columns,
+        body: body,
+        theme: 'grid',
+        styles: {
+          fontSize: 9,
+          cellPadding: 6,
+          halign: 'center',
+          valign: 'middle',
+          overflow: 'linebreak',
+          lineColor: [200, 200, 200],
+          lineWidth: 0.1,
+        },
+        headStyles: {
+          fillColor: [51, 65, 85],
+          textColor: [255, 255, 255],
+          fontSize: 10,
+          fontStyle: 'bold',
+        },
+        columnStyles: {
+          recess: { 
+            fillColor: [241, 245, 249], 
+            fontStyle: 'bold', 
+            textColor: [71, 85, 105],
+            fontSize: 8 
+          }
+        },
+        didParseCell: function (data) {
+          if (data.column.dataKey === 'recess') {
+            data.cell.styles.halign = 'center';
+          }
+        },
+        margin: { top: 30 },
+      });
+
+      doc.save(`adjustment-chart-${formattedDate}.pdf`);
+    } catch (err) {
+      console.error("PDF Export failed:", err);
+      setError("Failed to generate PDF. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-      <div className="p-6 border-b border-slate-700/50 bg-slate-900/20">
-        <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
-          <Bot className="h-5 w-5 text-indigo-400" />
-          AI Teacher Allocation
-        </h3>
-        <p className="text-sm text-slate-400 mt-1">Find the best covering teacher automatically considering workload limits.</p>
+      <div className="p-6 border-b border-slate-700/50 bg-slate-900/20 flex justify-between items-center">
+        <div>
+          <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
+            <Bot className="h-5 w-5 text-indigo-400" />
+            AI Teacher Allocation
+          </h3>
+          <p className="text-sm text-slate-400 mt-1">Find the best covering teacher automatically.</p>
+        </div>
+        <button
+          onClick={handleExportPDF}
+          disabled={loading || saving}
+          className="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors flex items-center gap-2 text-xs font-medium"
+          title="Download Adjustment Chart PDF"
+        >
+          <FileDown className="h-4 w-4" />
+          Export PDF
+        </button>
       </div>
 
       <div className="p-6">
