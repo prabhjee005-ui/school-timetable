@@ -106,3 +106,39 @@ def reject_swap_request(id: int):
         "message": "Swap request rejected",
         "request": update_response.data[0]
     }
+
+@router.delete("/{id}")
+def delete_swap_request(id: int):
+    """
+    Delete a single swap request by its ID.
+    """
+    supabase = get_supabase_client()
+    
+    delete_response = (
+        supabase.table("swap_requests")
+        .delete()
+        .eq("id", id)
+        .execute()
+    )
+    
+    if not delete_response.data:
+        raise HTTPException(status_code=404, detail="Swap request not found")
+        
+    return {"message": "Swap request deleted successfully"}
+
+@router.delete("/")
+def clear_swap_requests(teacher_id: str):
+    """
+    Clear all swap requests for a specific teacher.
+    """
+    supabase = get_supabase_client()
+    
+    # Delete requests where teacher is requester OR target
+    delete_response = (
+        supabase.table("swap_requests")
+        .delete()
+        .or_(f"requester_id.eq.{teacher_id},target_teacher_id.eq.{teacher_id}")
+        .execute()
+    )
+    
+    return {"message": f"Cleared {len(delete_response.data)} requests"}

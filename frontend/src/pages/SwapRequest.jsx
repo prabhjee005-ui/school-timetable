@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import api from '../api';
 
 const TEACHER_DIRECTORY = {
@@ -93,7 +94,7 @@ export default function SwapRequest() {
       await api.post('/swap-requests/', payload);
       setFormData({
         requester_period: 1,
-        requester_day: 'Monday',
+        requester_day: days.includes(today) ? today : 'Monday',
         target_teacher_id: '',
         target_period: '',
         target_day: ''
