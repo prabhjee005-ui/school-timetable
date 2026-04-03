@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import api from './api';
 import Header from './components/Header';
 import CurrentPeriodCard from './components/CurrentPeriodCard';
 import TimetableTable from './components/TimetableTable';
@@ -16,6 +17,24 @@ function App() {
   const [page, setPage] = useState('home');
   const currentDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
   const displayDay = currentDay;
+
+  // Heartbeat to keep Railway backend awake (every 4 minutes)
+  useEffect(() => {
+    const pingServer = async () => {
+      try {
+        await api.get('/ping');
+      } catch (err) {
+        console.warn('Heartbeat failed, server might be starting up...');
+      }
+    };
+    
+    // Initial ping
+    pingServer();
+    
+    // Set interval
+    const interval = setInterval(pingServer, 240000); 
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-900 text-slate-100 selection:bg-indigo-500/30">

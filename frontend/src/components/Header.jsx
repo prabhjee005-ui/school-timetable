@@ -18,7 +18,7 @@ export default function Header() {
               <CalendarDays className="h-6 w-6 text-indigo-400" />
             </div>
             <h1 className="text-xl font-semibold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">
-              AI Timetable System | DPS Demo
+              AI Timetable System
             </h1>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">

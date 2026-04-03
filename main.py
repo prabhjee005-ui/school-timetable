@@ -21,6 +21,7 @@ app.add_middleware(
         "http://127.0.0.1:5173",
         "https://school-timetable-ten.vercel.app",
     ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -39,3 +40,8 @@ app.include_router(analytics_router, prefix="/analytics")
 @app.get("/")
 def root():
     return {"message": "AI School Timetable API is running"}
+
+
+@app.get("/ping")
+def ping():
+    return {"status": "ok"}
