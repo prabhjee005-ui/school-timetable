@@ -14,15 +14,10 @@ from routers.swap_requests import router as swap_requests_router
 
 app = FastAPI(title="AI School Timetable Management System")
 
-# Keep CORS open for local React integration during development.
+# Keep CORS open for local React integration during development and Vercel production.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://school-timetable-ten.vercel.app",
-    ],
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
