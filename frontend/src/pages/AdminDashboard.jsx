@@ -308,7 +308,10 @@ export default function AdminDashboard() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
                   {schoolConfig.class_names
-                    .filter(c => c.startsWith(selectedGrade.toString()))
+                    .filter(c => {
+                      const gradeNum = c.match(/^(\d+)/)?.[0];
+                      return gradeNum === selectedGrade.toString();
+                    })
                     .map(className => (
                       <button
                         key={className}
