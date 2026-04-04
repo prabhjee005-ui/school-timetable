@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LogIn, ShieldCheck, UserCircle, AlertCircle } from 'lucide-react';
 
@@ -7,6 +8,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -31,11 +33,15 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md relative z-10">
         {/* Logo Section */}
-        <div className="text-center mb-10">
-          <div className="inline-flex p-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 mb-4 animate-pulse">
+        <div 
+          className="text-center mb-10 cursor-pointer group" 
+          onClick={() => navigate('/')}
+          title="Go to Home"
+        >
+          <div className="inline-flex p-4 bg-indigo-500/10 rounded-2xl border border-indigo-500/20 mb-4 group-hover:bg-indigo-500/20 transition-all">
             <ShieldCheck className="h-10 w-10 text-indigo-400" />
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">
+          <h1 className="text-3xl font-extrabold text-white tracking-tight group-hover:opacity-80 transition-opacity">
             AI Timetable System
           </h1>
           <p className="text-slate-400 mt-2 font-medium">

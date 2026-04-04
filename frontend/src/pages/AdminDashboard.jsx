@@ -11,11 +11,14 @@ import {
   Save, 
   AlertCircle,
   Menu,
-  X
+  X,
+  CalendarDays
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('school');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -179,9 +182,26 @@ export default function AdminDashboard() {
     <div className="flex h-screen bg-slate-950 text-slate-200 overflow-hidden">
       {/* Sidebar */}
       <aside className={`${isSidebarOpen ? 'w-64' : 'w-20'} bg-slate-900 border-r border-slate-800 transition-all duration-300 flex flex-col`}>
-        <div className="p-6 flex items-center justify-between">
-          {isSidebarOpen && <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">ADMIN</span>}
-          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-2 hover:bg-slate-800 rounded-lg">
+        <div 
+          className="p-6 flex items-center justify-between cursor-pointer group"
+          onClick={() => navigate('/')}
+          title="Go to Home"
+        >
+          <div className="flex items-center gap-2">
+            <CalendarDays className="h-6 w-6 text-indigo-400" />
+            {isSidebarOpen && (
+              <span className="font-bold text-xl tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent group-hover:opacity-80 transition-opacity">
+                ADMIN
+              </span>
+            )}
+          </div>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation(); // Don't trigger logo redirect
+              setIsSidebarOpen(!isSidebarOpen);
+            }} 
+            className="p-2 hover:bg-slate-800 rounded-lg ml-auto"
+          >
             {isSidebarOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
