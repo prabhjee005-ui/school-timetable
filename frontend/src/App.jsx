@@ -17,6 +17,7 @@ import './App.css';
 
 // Navigation component to handle active state
 function Navigation({ isPrincipal }) {
+  const today = 'Monday'; // DEV: hardcoded day for testing
   const location = useLocation();
   const path = location.pathname;
 
@@ -44,7 +45,7 @@ function Navigation({ isPrincipal }) {
 function HomeContent() {
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const currentDay = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
+  const currentDay = 'Monday'; // DEV: hardcoded day for testing
 
   return (
     <>

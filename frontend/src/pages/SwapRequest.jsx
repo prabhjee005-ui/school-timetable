@@ -22,7 +22,7 @@ export default function SwapRequest() {
   const [checkingId, setCheckingId] = useState(false);
   
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  const today = 'Monday'; // DEV: hardcoded day for testing
 
   const [formData, setFormData] = useState({
     requester_period: 1,

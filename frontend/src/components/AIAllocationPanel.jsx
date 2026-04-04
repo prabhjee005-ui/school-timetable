@@ -7,7 +7,7 @@ import api from '../api';
 export default function AIAllocationPanel({ onAdjustmentCreated }) {
   const [formData, setFormData] = useState({
     day: 'Monday',
-    date: new Date().toISOString().split('T')[0],
+    date: '2026-04-06', // DEV: hardcoded day for testing
     period_number: 1,
     class_name: '',
     subject: '',

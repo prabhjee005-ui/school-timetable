@@ -12,7 +12,7 @@ export default function AdjustmentsTable({ refreshTrigger }) {
       setLoading(true);
       try {
         // Explicitly format today's date in local client timezone to prevent mismatch with server's UTC
-        const today = new Date().toISOString().split('T')[0];
+        const today = '2026-04-06'; // DEV: hardcoded day for testing
         const response = await api.get(`/adjustments/today?query_date=${today}`);
         setEntries(response.data.adjustments || []);
       } catch (error) {

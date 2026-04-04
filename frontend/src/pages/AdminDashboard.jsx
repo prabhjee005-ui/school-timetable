@@ -246,7 +246,7 @@ export default function AdminDashboard() {
             <p className="text-slate-400 mt-1">Manage your school's AI-powered timetable system.</p>
           </div>
           <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm font-medium text-slate-300">
-            {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            {'Monday, April 6, 2026'} // DEV: hardcoded day for testing
           </div>
         </header>
 
@@ -400,7 +400,7 @@ export default function AdminDashboard() {
                 <div className="space-y-6 pt-6 border-t border-slate-800">
                   <div>
                     <h3 className="text-xl font-bold text-white">
-                      Today's Timetable — {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                      Today's Timetable — April 6, 2026 // DEV: hardcoded day for testing
                     </h3>
                     <p className="text-sm text-slate-400">Schedule updated with live covers and adjustments</p>
                   </div>
@@ -421,11 +421,11 @@ export default function AdminDashboard() {
                         <tbody>
                           <tr className="bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors">
                             <td className="p-4 font-bold text-indigo-400 border-r border-slate-800 text-sm whitespace-nowrap">
-                              {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+                              {'Monday'} // DEV: hardcoded day for testing
                             </td>
                             {[...Array(schoolConfig.num_periods || 8)].map((_, i) => {
                               const periodNum = i + 1;
-                              const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+                              const todayDay = 'Monday'; // DEV: hardcoded day for testing
                               const entry = masterTimetable.find(e => e.class_name === selectedSection && e.day === todayDay && e.period_number === periodNum);
                               
                               // Check for adjustment (SILENT REPLACEMENT)
