@@ -12,7 +12,9 @@ import {
   AlertCircle,
   Menu,
   X,
-  CalendarDays
+  CalendarDays,
+  LayoutGrid,
+  ChevronLeft
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
@@ -21,6 +23,11 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('school');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // --- CLASS TIMETABLE DRILL-DOWN STATE ---
+  const [viewLevel, setViewLevel] = useState('grade'); // grade, section, view
+  const [selectedGrade, setSelectedGrade] = useState(null);
+  const [selectedSection, setSelectedSection] = useState(null);
 
   // --- SCHOOL SETUP STATE ---
   const [schoolConfig, setSchoolConfig] = useState({
@@ -171,6 +178,7 @@ export default function AdminDashboard() {
   };
 
   const navItems = [
+    { id: 'class_timetable', label: 'Class Timetable', icon: LayoutGrid, color: 'text-pink-400' },
     { id: 'school', label: 'School Setup', icon: Settings, color: 'text-blue-400' },
     { id: 'teachers', label: 'Teacher Management', icon: Users, color: 'text-green-400' },
     { id: 'timetable', label: 'Timetable Builder', icon: Calendar, color: 'text-amber-400' },
@@ -237,6 +245,153 @@ export default function AdminDashboard() {
             {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </div>
         </header>
+
+        {/* --- SECTION: CLASS TIMETABLE DRILL-DOWN --- */}
+        {activeTab === 'class_timetable' && (
+          <div className="space-y-6">
+            {/* Breadcrumbs / Navigation */}
+            <div className="flex items-center gap-3 text-sm mb-4">
+              <span 
+                className="text-slate-400 cursor-pointer hover:text-indigo-400 transition-colors"
+                onClick={() => { setViewLevel('grade'); setSelectedGrade(null); setSelectedSection(null); }}
+              >
+                Class Timetable
+              </span>
+              {selectedGrade && (
+                <>
+                  <span className="text-slate-600">/</span>
+                  <span 
+                    className="text-slate-400 cursor-pointer hover:text-indigo-400 transition-colors"
+                    onClick={() => { setViewLevel('section'); setSelectedSection(null); }}
+                  >
+                    {selectedGrade}{selectedGrade === 1 ? 'st' : selectedGrade === 2 ? 'nd' : selectedGrade === 3 ? 'rd' : 'th'} Grade
+                  </span>
+                </>
+              )}
+              {selectedSection && (
+                <>
+                  <span className="text-slate-600">/</span>
+                  <span className="text-indigo-400 font-medium">{selectedSection}</span>
+                </>
+              )}
+            </div>
+
+            {/* LEVEL 1: GRADE SELECTION */}
+            {viewLevel === 'grade' && (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {[1,2,3,4,5,6,7,8,9,10,11,12].map(grade => (
+                  <button
+                    key={grade}
+                    onClick={() => { setSelectedGrade(grade); setViewLevel('section'); }}
+                    className="p-8 bg-slate-900/50 border border-slate-800 rounded-3xl hover:border-indigo-500/50 hover:bg-slate-800/80 transition-all group text-center"
+                  >
+                    <div className="text-3xl font-bold bg-indigo-400 bg-clip-text text-transparent group-hover:scale-110 transition-transform">
+                      {grade}{grade === 1 ? 'st' : grade === 2 ? 'nd' : grade === 3 ? 'rd' : 'th'}
+                    </div>
+                    <div className="text-xs text-slate-500 mt-2 font-medium uppercase tracking-widest">Select Grade</div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* LEVEL 2: SECTION SELECTION */}
+            {viewLevel === 'section' && (
+              <div className="space-y-6">
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => { setViewLevel('grade'); setSelectedGrade(null); }}
+                    className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 text-slate-400 transition-colors"
+                  >
+                    <ChevronLeft size={20} />
+                  </button>
+                  <h3 className="text-2xl font-bold text-white">Select Section</h3>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {schoolConfig.class_names
+                    .filter(c => c.startsWith(selectedGrade.toString()))
+                    .map(className => (
+                      <button
+                        key={className}
+                        onClick={() => { setSelectedSection(className); setViewLevel('view'); }}
+                        className="p-6 bg-slate-900/50 border border-slate-800 rounded-2xl hover:border-indigo-500/50 hover:bg-slate-800/80 transition-all text-center"
+                      >
+                        <div className="text-xl font-bold text-slate-200">{className}</div>
+                      </button>
+                    ))}
+                  {schoolConfig.class_names.filter(c => c.startsWith(selectedGrade.toString())).length === 0 && (
+                    <div className="col-span-full py-12 text-center text-slate-500 bg-slate-900/20 rounded-3xl border border-dashed border-slate-800">
+                      No sections found for {selectedGrade}th Grade.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* LEVEL 3: TIMETABLE VIEW */}
+            {viewLevel === 'view' && (
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <button 
+                      onClick={() => { setViewLevel('section'); setSelectedSection(null); }}
+                      className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 text-slate-400 transition-colors"
+                    >
+                      <ChevronLeft size={20} />
+                    </button>
+                    <div>
+                      <h3 className="text-2xl font-bold text-white">Timetable: {selectedSection}</h3>
+                      <p className="text-sm text-slate-400">Weekly schedule overview</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-900/50 border border-slate-800 rounded-3xl overflow-hidden">
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-slate-900 border-b border-slate-800">
+                          <th className="p-4 text-left text-xs font-bold text-slate-500 uppercase tracking-widest border-r border-slate-800 w-32">Day</th>
+                          {[...Array(schoolConfig.num_periods || 8)].map((_, i) => (
+                            <th key={i} className="p-4 text-center text-xs font-bold text-slate-500 uppercase tracking-widest border-r border-slate-800 last:border-0 min-w-[120px]">
+                              Period {i + 1}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
+                          <tr key={day} className="border-b border-slate-800 last:border-0 hover:bg-slate-800/20 transition-colors">
+                            <td className="p-4 font-bold text-indigo-400 text-sm border-r border-slate-800 bg-slate-900/30">{day}</td>
+                            {[...Array(schoolConfig.num_periods || 8)].map((_, i) => {
+                              const pNum = i + 1;
+                              const entry = masterTimetable.find(e => e.day === day && e.period_number === pNum && e.class_name === selectedSection);
+                              const teacher = teachers.find(t => t.id === entry?.teacher_id);
+                              
+                              return (
+                                <td key={i} className="p-3 border-r border-slate-800 last:border-0 text-center align-middle h-24">
+                                  {entry ? (
+                                    <div className="space-y-1">
+                                      <div className="font-bold text-white text-sm">{entry.subject}</div>
+                                      <div className="text-[10px] text-slate-400 bg-slate-950/50 py-1 px-2 rounded-md border border-slate-800 overflow-hidden text-ellipsis whitespace-nowrap">
+                                        {teacher?.name || entry.teacher_id}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="text-[10px] text-slate-700 italic">Free</div>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* --- SECTION: SCHOOL SETUP --- */}
         {activeTab === 'school' && (
