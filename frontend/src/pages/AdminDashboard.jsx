@@ -28,6 +28,7 @@ export default function AdminDashboard() {
   const [viewLevel, setViewLevel] = useState('grade'); // grade, section, view
   const [selectedGrade, setSelectedGrade] = useState(null);
   const [selectedSection, setSelectedSection] = useState(null);
+  const [todayAdjustments, setTodayAdjustments] = useState([]);
 
   // --- SCHOOL SETUP STATE ---
   const [schoolConfig, setSchoolConfig] = useState({
@@ -67,17 +68,20 @@ export default function AdminDashboard() {
 
   const fetchInitialData = async () => {
     try {
-      const [schoolRes, aiRes, teachersRes, timetableRes] = await Promise.all([
+      const todayDate = new Date().toISOString().split('T')[0];
+      const [schoolRes, aiRes, teachersRes, timetableRes, adjustmentsRes] = await Promise.all([
         api.get('/settings/school_config'),
         api.get('/ai-settings/ai_config'),
         api.get('/teachers'),
-        api.get('/timetable/all')
+        api.get('/timetable/all'),
+        api.get(`/adjustments/today?query_date=${todayDate}`)
       ]);
 
       setSchoolConfig(schoolRes.data);
       setAiConfig(aiRes.data);
       setTeachers(teachersRes.data.teachers);
       setMasterTimetable(timetableRes.data.entries);
+      setTodayAdjustments(adjustmentsRes.data.adjustments || []);
       
       // Initialize builder grid
       const grid = {};
@@ -389,6 +393,65 @@ export default function AdminDashboard() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                </div>
+
+                {/* TODAY'S ADJUSTED TIMETABLE */}
+                <div className="space-y-6 pt-6 border-t border-slate-800">
+                  <div>
+                    <h3 className="text-xl font-bold text-white">
+                      Today's Timetable — {new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+                    </h3>
+                    <p className="text-sm text-slate-400">Schedule updated with live covers and adjustments</p>
+                  </div>
+
+                  <div className="bg-slate-900/50 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl">
+                    <div className="overflow-x-auto">
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-slate-900 border-b border-slate-800">
+                            <th className="p-4 text-left text-xs font-bold text-slate-500 uppercase tracking-widest border-r border-slate-800 w-32">Today</th>
+                            {[...Array(schoolConfig.num_periods || 8)].map((_, i) => (
+                              <th key={i} className="p-4 text-center text-xs font-bold text-slate-500 uppercase tracking-widest border-r border-slate-800 last:border-0 min-w-[120px]">
+                                Period {i + 1}
+                              </th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors">
+                            <td className="p-4 font-bold text-indigo-400 border-r border-slate-800 text-sm whitespace-nowrap">
+                              {new Date().toLocaleDateString('en-US', { weekday: 'long' })}
+                            </td>
+                            {[...Array(schoolConfig.num_periods || 8)].map((_, i) => {
+                              const periodNum = i + 1;
+                              const todayDay = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+                              const entry = masterTimetable.find(e => e.class_name === selectedSection && e.day === todayDay && e.period_number === periodNum);
+                              
+                              // Check for adjustment (SILENT REPLACEMENT)
+                              const adjustment = todayAdjustments.find(a => a.class_name === selectedSection && a.period_number === periodNum);
+                              
+                              const teacher = teachers.find(t => t.id === (adjustment ? adjustment.covering_teacher_id : entry?.teacher_id));
+                              
+                              return (
+                                <td key={i} className="p-4 border-r border-slate-800 last:border-0 text-center min-w-[120px]">
+                                  {entry || adjustment ? (
+                                    <div className="space-y-1">
+                                      <div className="text-sm font-bold text-slate-100">{entry?.subject || adjustment?.subject}</div>
+                                      <div className="text-xs text-indigo-400 font-medium">
+                                        {teacher?.name || (adjustment ? adjustment.covering_teacher_name : entry?.teacher_id)}
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="text-xs font-medium text-slate-600 italic">Free</div>
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
