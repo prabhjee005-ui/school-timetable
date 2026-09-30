@@ -1,18 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bot, Sparkles, Check, AlertCircle, Loader2, FileDown } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../api';
+import { DEFAULT_OPERATING_DAYS, getDefaultOperatingDay, getLocalDateString } from '../utils/schoolSchedule';
 
-export default function AIAllocationPanel({ onAdjustmentCreated }) {
-  const [formData, setFormData] = useState({
-    day: 'Monday',
-    date: '2026-04-06', // DEV: hardcoded day for testing
-    period_number: 1,
-    class_name: '',
-    subject: '',
-    room: '',
-    original_teacher_id: ''
+export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays = DEFAULT_OPERATING_DAYS }) {
+  const [formData, setFormData] = useState(() => {
+    const today = new Date();
+    return {
+      day: getDefaultOperatingDay(operatingDays, today),
+      date: getLocalDateString(today),
+      period_number: 1,
+      class_name: '',
+      subject: '',
+      room: '',
+      original_teacher_id: ''
+    };
   });
 
   const [loading, setLoading] = useState(false);
@@ -21,8 +25,24 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      day: getDefaultOperatingDay(operatingDays, new Date(`${prev.date}T12:00:00`)),
+    }));
+  }, [operatingDays]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'date') {
+      const selectedDate = new Date(`${value}T12:00:00`);
+      setFormData(prev => ({
+        ...prev,
+        date: value,
+        day: getDefaultOperatingDay(operatingDays, selectedDate),
+      }));
+      return;
+    }
     let finalValue = value;
     if (name === 'period_number') finalValue = parseInt(value);
     else if (name === 'original_teacher_id') finalValue = value.trim();
@@ -210,7 +230,7 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Day of Week</label>
               <select name="day" value={formData.day} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500">
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => <option key={d} value={d}>{d}</option>)}
+                {operatingDays.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             <div>

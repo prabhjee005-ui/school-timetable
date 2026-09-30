@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
+import { DEFAULT_OPERATING_DAYS, getDefaultOperatingDay } from '../utils/schoolSchedule';
 
 const TEACHER_DIRECTORY = {
   "T01": "Mr. Rajesh Kumar",
@@ -14,23 +15,25 @@ const TEACHER_DIRECTORY = {
   "T10": "Deepak Nair"
 };
 
-export default function SwapRequest() {
+export default function SwapRequest({ operatingDays = DEFAULT_OPERATING_DAYS }) {
   const [myTeacherId, setMyTeacherId] = useState('');
   const [isValidId, setIsValidId] = useState(false);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [checkingId, setCheckingId] = useState(false);
   
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const today = 'Monday'; // DEV: hardcoded day for testing
-
+  const days = operatingDays;
   const [formData, setFormData] = useState({
     requester_period: 1,
-    requester_day: days.includes(today) ? today : 'Monday',
+    requester_day: getDefaultOperatingDay(days),
     target_teacher_id: '',
     target_period: '',
     target_day: ''
   });
+
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, requester_day: getDefaultOperatingDay(days) }));
+  }, [days]);
 
   const fetchRequests = async () => {
     if (!isValidId) return;
@@ -94,7 +97,7 @@ export default function SwapRequest() {
       await api.post('/swap-requests/', payload);
       setFormData({
         requester_period: 1,
-        requester_day: days.includes(today) ? today : 'Monday',
+        requester_day: getDefaultOperatingDay(days),
         target_teacher_id: '',
         target_period: '',
         target_day: ''

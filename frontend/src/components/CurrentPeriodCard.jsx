@@ -11,11 +11,13 @@ export default function CurrentPeriodCard({ onPeriodChange }) {
       try {
         const response = await api.get('/current-period');
         setData(response.data);
-        const isActive = response.data.active_period !== null && response.data.active_period !== undefined;
+        const isTeachingPeriod = response.data.slot_type === 'TEACHING';
+        const isCT = response.data.slot_type === 'CT';
+        const hasActiveSlot = isTeachingPeriod || isCT;
         if (onPeriodChange) {
           onPeriodChange({
-            period: isActive ? response.data.active_period : 1,
-            isClosed: !isActive
+            period: isTeachingPeriod ? response.data.active_period : 1,
+            isClosed: !hasActiveSlot
           });
         }
       } catch (error) {
@@ -39,14 +41,16 @@ export default function CurrentPeriodCard({ onPeriodChange }) {
     );
   }
 
-  const isActive = data?.active_period !== null && data?.active_period !== undefined;
+  const isTeachingPeriod = data?.slot_type === 'TEACHING';
+  const isCT = data?.slot_type === 'CT';
+  const hasActiveSlot = isTeachingPeriod || isCT;
 
   return (
     <div className="group bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl p-6 shadow-xl transition-all hover:border-slate-600/50 hover:shadow-2xl">
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-center gap-2 mb-2">
-            {isActive ? (
+            {hasActiveSlot ? (
               <span className="relative flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -61,10 +65,20 @@ export default function CurrentPeriodCard({ onPeriodChange }) {
             </h3>
           </div>
           
-          {isActive ? (
+          {isTeachingPeriod ? (
             <div>
               <h2 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
                 Period {data.active_period}
+              </h2>
+              <div className="mt-3 flex items-center gap-2 text-slate-400 bg-slate-900/50 w-fit px-3 py-1.5 rounded-lg border border-slate-700/50">
+                <Clock className="h-4 w-4" />
+                <span className="text-sm font-mono">{data.start_time} - {data.end_time}</span>
+              </div>
+            </div>
+          ) : isCT ? (
+            <div>
+              <h2 className="text-3xl font-bold text-slate-100 flex items-center gap-3">
+                {data.display_label}
               </h2>
               <div className="mt-3 flex items-center gap-2 text-slate-400 bg-slate-900/50 w-fit px-3 py-1.5 rounded-lg border border-slate-700/50">
                 <Clock className="h-4 w-4" />
@@ -81,8 +95,8 @@ export default function CurrentPeriodCard({ onPeriodChange }) {
           )}
         </div>
         
-        <div className={`p-4 rounded-xl shadow-inner ${isActive ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
-          <Activity className={`h-8 w-8 ${isActive ? 'text-emerald-400' : 'text-amber-400'}`} />
+        <div className={`p-4 rounded-xl shadow-inner ${hasActiveSlot ? 'bg-emerald-500/10' : 'bg-amber-500/10'}`}>
+          <Activity className={`h-8 w-8 ${hasActiveSlot ? 'text-emerald-400' : 'text-amber-400'}`} />
         </div>
       </div>
     </div>

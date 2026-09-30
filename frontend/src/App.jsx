@@ -13,11 +13,11 @@ import PrincipalView from './pages/PrincipalView';
 import AttendanceDashboard from './pages/AttendanceDashboard';
 import SwapRequest from './pages/SwapRequest';
 import AdminDashboard from './pages/AdminDashboard';
+import { DEFAULT_OPERATING_DAYS, getLocalDayName, getOperatingDays } from './utils/schoolSchedule';
 import './App.css';
 
 // Navigation component to handle active state
 function Navigation({ isPrincipal }) {
-  const today = 'Monday'; // DEV: hardcoded day for testing
   const location = useLocation();
   const path = location.pathname;
 
@@ -42,10 +42,10 @@ function Navigation({ isPrincipal }) {
   );
 }
 
-function HomeContent() {
+function HomeContent({ operatingDays }) {
   const [activePeriodInfo, setActivePeriodInfo] = useState({ period: 1, isClosed: false });
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const currentDay = 'Monday'; // DEV: hardcoded day for testing
+  const currentDay = getLocalDayName();
 
   return (
     <>
@@ -57,7 +57,7 @@ function HomeContent() {
           </div>
         </div>
         <div className="lg:col-span-1">
-          <AIAllocationPanel onAdjustmentCreated={() => setRefreshTrigger((prev) => prev + 1)} />
+          <AIAllocationPanel operatingDays={operatingDays} onAdjustmentCreated={() => setRefreshTrigger((prev) => prev + 1)} />
         </div>
       </div>
       <div className="mt-8">
@@ -71,6 +71,21 @@ function App() {
   // Use hooks first and unconditionally at the top level
   const user = { id: 'DEV_ADMIN', role: 'principal' }; // DEV: auth disabled
   const isPrincipal = user?.role === 'principal';
+  const [operatingDays, setOperatingDays] = useState(DEFAULT_OPERATING_DAYS);
+
+  useEffect(() => {
+    api.get('/settings/school_config')
+      .then((response) => setOperatingDays(getOperatingDays(response.data)))
+      .catch((error) => console.error('Failed to load school operating days:', error));
+  }, []);
+
+  useEffect(() => {
+    const handleSchoolConfigUpdated = (event) => {
+      setOperatingDays(getOperatingDays(event.detail));
+    };
+    window.addEventListener('school-config-updated', handleSchoolConfigUpdated);
+    return () => window.removeEventListener('school-config-updated', handleSchoolConfigUpdated);
+  }, []);
 
   // Heartbeat to keep Railway backend awake (every 4 minutes)
   useEffect(() => {
@@ -102,9 +117,9 @@ function App() {
               <Navigation isPrincipal={isPrincipal} />
               
               <Routes>
-                <Route path="/" element={<HomeContent />} />
+                <Route path="/" element={<HomeContent operatingDays={operatingDays} />} />
                 <Route path="/leave" element={<LeaveRequest />} />
-                <Route path="/swap" element={<SwapRequest />} />
+                <Route path="/swap" element={<SwapRequest operatingDays={operatingDays} />} />
                 <Route path="/principal" element={<PrincipalViewWithNav />} />
                 <Route path="/attendance" element={<AttendanceDashboardWithNav />} />
               </Routes>
@@ -127,4 +142,3 @@ function AttendanceDashboardWithNav() {
 }
 
 export default App;
-

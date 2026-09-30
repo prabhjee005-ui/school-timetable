@@ -18,9 +18,13 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api';
+import { DEFAULT_OPERATING_DAYS, WEEKDAY_OPTIONS, getDefaultOperatingDay, getLocalDateString, getLocalDayName, getOperatingDays } from '../utils/schoolSchedule';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const now = new Date();
+  const currentDay = getLocalDayName(now);
+  const currentDateLabel = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
   const [activeTab, setActiveTab] = useState('school');
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
@@ -35,7 +39,8 @@ export default function AdminDashboard() {
     school_name: '',
     num_periods: 8,
     recess_after_period: 4,
-    class_names: []
+    class_names: [],
+    operating_days: DEFAULT_OPERATING_DAYS
   });
   const [newClassName, setNewClassName] = useState('');
 
@@ -47,6 +52,7 @@ export default function AdminDashboard() {
   // --- TIMETABLE BUILDER STATE ---
   const [masterTimetable, setMasterTimetable] = useState([]);
   const [builderData, setBuilderData] = useState({}); // { '6A-1': 'T01', ... }
+  const [builderDay, setBuilderDay] = useState(getDefaultOperatingDay(DEFAULT_OPERATING_DAYS));
 
   // --- AI SETTINGS STATE ---
   const [aiConfig, setAiConfig] = useState({
@@ -68,7 +74,7 @@ export default function AdminDashboard() {
 
   const fetchInitialData = async () => {
     try {
-      const todayDate = new Date().toISOString().split('T')[0];
+      const todayDate = getLocalDateString();
       const [schoolRes, aiRes, teachersRes, timetableRes, adjustmentsRes] = await Promise.all([
         api.get('/settings/school_config'),
         api.get('/ai-settings/ai_config'),
@@ -77,7 +83,9 @@ export default function AdminDashboard() {
         api.get(`/adjustments/today?query_date=${todayDate}`)
       ]);
 
-      setSchoolConfig(schoolRes.data);
+      const config = { ...schoolRes.data, operating_days: getOperatingDays(schoolRes.data) };
+      setSchoolConfig(config);
+      setBuilderDay(getDefaultOperatingDay(config.operating_days));
       setAiConfig(aiRes.data);
       setTeachers(teachersRes.data.teachers);
       setMasterTimetable(timetableRes.data.entries);
@@ -95,7 +103,7 @@ export default function AdminDashboard() {
       setStats({
         totalTeachers: teachersRes.data.teachers.length,
         totalClasses: schoolRes.data.class_names.length || classes.length,
-        completionRate: calculateCompletion(timetableRes.data.entries, schoolRes.data)
+        completionRate: calculateCompletion(timetableRes.data.entries, config)
       });
     } catch (err) {
       console.error('Failed to fetch admin data:', err);
@@ -103,7 +111,7 @@ export default function AdminDashboard() {
   };
 
   const calculateCompletion = (entries, config) => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    const days = config.operating_days || [];
     const totalExpected = (config.class_names?.length || 0) * (config.num_periods || 8) * days.length;
     if (totalExpected === 0) return 0;
     return Math.round((entries.length / totalExpected) * 100);
@@ -113,10 +121,20 @@ export default function AdminDashboard() {
   const handleSaveSchool = async () => {
     try {
       await api.post('/settings/school_config', { value: schoolConfig });
+      window.dispatchEvent(new CustomEvent('school-config-updated', { detail: schoolConfig }));
       alert('School settings saved!');
     } catch (err) {
       alert('Failed to save school settings');
     }
+  };
+
+  const toggleOperatingDay = (day) => {
+    const selectedDays = new Set(schoolConfig.operating_days || []);
+    if (selectedDays.has(day)) selectedDays.delete(day);
+    else selectedDays.add(day);
+    const operatingDays = WEEKDAY_OPTIONS.filter(option => selectedDays.has(option));
+    setSchoolConfig({ ...schoolConfig, operating_days: operatingDays });
+    setBuilderDay(getDefaultOperatingDay(operatingDays));
   };
 
   const handleAddClass = () => {
@@ -246,7 +264,7 @@ export default function AdminDashboard() {
             <p className="text-slate-400 mt-1">Manage your school's AI-powered timetable system.</p>
           </div>
           <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm font-medium text-slate-300">
-            {'Monday, April 6, 2026'} // DEV: hardcoded day for testing
+            {currentDateLabel}
           </div>
         </header>
 
@@ -366,7 +384,7 @@ export default function AdminDashboard() {
                         </tr>
                       </thead>
                       <tbody>
-                        {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map((day) => (
+                        {(schoolConfig.operating_days || []).map((day) => (
                           <tr key={day} className="border-b border-slate-800 last:border-0 hover:bg-slate-800/20 transition-colors">
                             <td className="p-4 font-bold text-indigo-400 text-sm border-r border-slate-800 bg-slate-900/30">{day}</td>
                             {[...Array(schoolConfig.num_periods || 8)].map((_, i) => {
@@ -400,7 +418,7 @@ export default function AdminDashboard() {
                 <div className="space-y-6 pt-6 border-t border-slate-800">
                   <div>
                     <h3 className="text-xl font-bold text-white">
-                      Today's Timetable — April 6, 2026 // DEV: hardcoded day for testing
+                      Today's Timetable — {currentDateLabel}
                     </h3>
                     <p className="text-sm text-slate-400">Schedule updated with live covers and adjustments</p>
                   </div>
@@ -421,11 +439,11 @@ export default function AdminDashboard() {
                         <tbody>
                           <tr className="bg-indigo-500/5 hover:bg-indigo-500/10 transition-colors">
                             <td className="p-4 font-bold text-indigo-400 border-r border-slate-800 text-sm whitespace-nowrap">
-                              {'Monday'} // DEV: hardcoded day for testing
+                              {currentDay}
                             </td>
                             {[...Array(schoolConfig.num_periods || 8)].map((_, i) => {
                               const periodNum = i + 1;
-                              const todayDay = 'Monday'; // DEV: hardcoded day for testing
+                              const todayDay = currentDay;
                               const entry = masterTimetable.find(e => e.class_name === selectedSection && e.day === todayDay && e.period_number === periodNum);
                               
                               // Check for adjustment (SILENT REPLACEMENT)
@@ -494,6 +512,22 @@ export default function AdminDashboard() {
                       onChange={e => setSchoolConfig({...schoolConfig, recess_after_period: parseInt(e.target.value)})}
                       className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500/50"
                     />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-400 mb-2">School Operating Days</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {WEEKDAY_OPTIONS.map(day => (
+                      <label key={day} className="flex items-center gap-2 text-sm text-slate-300">
+                        <input
+                          type="checkbox"
+                          checked={(schoolConfig.operating_days || []).includes(day)}
+                          onChange={() => toggleOperatingDay(day)}
+                          className="accent-indigo-500"
+                        />
+                        {day}
+                      </label>
+                    ))}
                   </div>
                 </div>
                 <button onClick={handleSaveSchool} className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-500/20 active:scale-[0.98]">
@@ -612,8 +646,8 @@ export default function AdminDashboard() {
             <div className="flex justify-between items-center bg-slate-900/50 border border-slate-800 rounded-3xl p-6">
               <div className="flex gap-4 items-center">
                 <span className="text-sm font-medium text-slate-400">Target Day:</span>
-                <select className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 focus:outline-none">
-                  {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => <option key={d} value={d}>{d}</option>)}
+                <select value={builderDay} onChange={e => setBuilderDay(e.target.value)} className="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 focus:outline-none">
+                  {(schoolConfig.operating_days || []).map(d => <option key={d} value={d}>{d}</option>)}
                 </select>
               </div>
               <button 
@@ -645,7 +679,7 @@ export default function AdminDashboard() {
                       </td>
                       {Array.from({ length: schoolConfig.num_periods || 8 }).map((_, i) => {
                         const pNum = i + 1;
-                        const day = 'Monday'; // Default for builder view, would need a day switcher
+                        const day = builderDay;
                         const key = `${cls}-${pNum}-${day}`;
                         const val = builderData[key] || '';
                         
@@ -767,7 +801,7 @@ export default function AdminDashboard() {
               </h3>
               <div className="space-y-4">
                 {[
-                  { text: 'Master Timetable updated for Monday', time: '2 mins ago', type: 'update' },
+                  { text: `Master Timetable updated for ${currentDay}`, time: '2 mins ago', type: 'update' },
                   { text: 'New teacher T11 added to database', time: '1 hour ago', type: 'add' },
                   { text: 'AI Preferences synced with rules engine', time: '3 hours ago', type: 'system' },
                   { text: 'School recess shifted to after Period 4', time: 'Yesterday', type: 'config' }

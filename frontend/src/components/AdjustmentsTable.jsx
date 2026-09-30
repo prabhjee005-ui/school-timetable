@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { CalendarRange, MapPin, Users, Loader2, Trash2 } from 'lucide-react';
 import api from '../api';
+import { getLocalDateString } from '../utils/schoolSchedule';
 
 export default function AdjustmentsTable({ refreshTrigger }) {
   const [entries, setEntries] = useState([]);
@@ -11,8 +12,7 @@ export default function AdjustmentsTable({ refreshTrigger }) {
     const fetchAdjustments = async () => {
       setLoading(true);
       try {
-        // Explicitly format today's date in local client timezone to prevent mismatch with server's UTC
-        const today = '2026-04-06'; // DEV: hardcoded day for testing
+        const today = getLocalDateString();
         const response = await api.get(`/adjustments/today?query_date=${today}`);
         setEntries(response.data.adjustments || []);
       } catch (error) {
