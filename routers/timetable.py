@@ -1,8 +1,9 @@
-from datetime import time, datetime, timedelta
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Query
 from database import get_supabase_client
+from routers.schedule import load_schedule_slots, upcoming_teaching_starts
 
 router = APIRouter(tags=["Timetable"])
 
@@ -45,17 +46,6 @@ def update_timetable_entry(entry_id: int, entry: TimetableEntry):
         raise HTTPException(status_code=404, detail="Entry not found")
     return {"message": "Entry updated", "data": response.data[0]}
 
-
-PERIOD_START_TIMES: dict[int, time] = {
-    1: time(8, 0),
-    2: time(8, 40),
-    3: time(9, 20),
-    4: time(10, 0),
-    5: time(11, 40),
-    6: time(12, 20),
-    7: time(13, 0),
-    8: time(13, 40),
-}
 
 @router.get("/timetable")
 def get_timetable(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
@@ -136,42 +126,18 @@ def get_upcoming_periods(
 
     ist = ZoneInfo("Asia/Kolkata")
     now = datetime.now(tz=ist)
-    window_end = now + timedelta(minutes=minutes_ahead)
     today_day_name = now.strftime("%A")
-    tomorrow_day_name = (now + timedelta(days=1)).strftime("%A")
+    window_end = now + timedelta(minutes=minutes_ahead)
     window_crosses_midnight = window_end.date() != now.date()
 
-    upcoming_periods: list[dict] = []
-    for period_number, period_start_time in PERIOD_START_TIMES.items():
-        start_dt_today = datetime.combine(now.date(), period_start_time, tzinfo=ist)
-
-        if now <= start_dt_today <= window_end:
-            upcoming_periods.append(
-                {
-                    "day": today_day_name,
-                    "period_number": period_number,
-                    "period_start_time": period_start_time.strftime("%H:%M:%S"),
-                }
-            )
-            continue
-
-        if window_crosses_midnight:
-            start_dt_tomorrow = start_dt_today + timedelta(days=1)
-            if now <= start_dt_tomorrow <= window_end:
-                upcoming_periods.append(
-                    {
-                        "day": tomorrow_day_name,
-                        "period_number": period_number,
-                        "period_start_time": period_start_time.strftime("%H:%M:%S"),
-                    }
-                )
+    upcoming_periods = upcoming_teaching_starts(
+        load_schedule_slots(), now, minutes_ahead
+    )
 
     if not upcoming_periods:
         return []
 
-    target_days = [today_day_name]
-    if window_crosses_midnight:
-        target_days.append(tomorrow_day_name)
+    target_days = list(dict.fromkeys(p["day"] for p in upcoming_periods)) or [today_day_name]
 
     period_start_map = {
         (p["day"], p["period_number"]): p["period_start_time"] for p in upcoming_periods
