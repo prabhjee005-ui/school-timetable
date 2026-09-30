@@ -83,6 +83,10 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     """
     supabase = get_supabase_client()
     week_start = _get_week_start(payload.date)
+    requested_date = datetime.strptime(payload.date, "%Y-%m-%d").date()
+    day = payload.day.strip().title()
+    if requested_date.strftime("%A") != day:
+        raise HTTPException(status_code=400, detail="day must match date")
 
     target_tier = _tier_for_class_name(payload.class_name)
 
@@ -100,11 +104,23 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
     busy_response = (
         supabase.table("timetable")
         .select("teacher_id")
-        .eq("day", payload.day)
+        .eq("day", day)
         .eq("period_number", payload.period_number)
         .execute()
     )
     busy_teacher_ids = {row["teacher_id"] for row in (busy_response.data or [])}
+    covering_response = (
+        supabase.table("adjustments")
+        .select("covering_teacher_id")
+        .eq("date", payload.date)
+        .eq("period_number", payload.period_number)
+        .execute()
+    )
+    busy_teacher_ids.update(
+        row["covering_teacher_id"]
+        for row in (covering_response.data or [])
+        if row.get("covering_teacher_id")
+    )
 
     free_teachers = [t for t in all_teachers if t["id"] not in busy_teacher_ids]
     if not free_teachers:
@@ -190,6 +206,20 @@ def create_adjustment(payload: AdjustmentCreate):
     """
     supabase = get_supabase_client()
     week_start = _get_week_start(payload.date)
+
+    existing_cover = (
+        supabase.table("adjustments")
+        .select("id")
+        .eq("date", payload.date)
+        .eq("period_number", payload.period_number)
+        .eq("covering_teacher_id", payload.covering_teacher_id)
+        .execute()
+    )
+    if existing_cover.data:
+        raise HTTPException(
+            status_code=409,
+            detail="Teacher is already covering a class in this period",
+        )
 
     try:
         adjustment_insert = (

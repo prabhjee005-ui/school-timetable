@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, Query
@@ -75,8 +75,14 @@ def get_timetable(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
     return {"day": day, "period": period, "entries": entries}
 
 @router.get("/free-teachers")
-def get_free_teachers(day: str = Query(...), period: int = Query(..., ge=1, le=8)):
+def get_free_teachers(
+    day: str = Query(...),
+    period: int = Query(..., ge=1, le=8),
+    date: date = Query(...),
+):
     day = day.title()
+    if date.strftime("%A") != day:
+        raise HTTPException(status_code=400, detail="day must match date")
     supabase = get_supabase_client()
     all_teachers = supabase.table("teachers").select("id,name,subjects,max_extra").execute()
     if not all_teachers.data:
@@ -89,6 +95,18 @@ def get_free_teachers(day: str = Query(...), period: int = Query(..., ge=1, le=8
         .execute()
     )
     busy_teacher_ids = {row["teacher_id"] for row in (busy_teachers.data or [])}
+    covering_teachers = (
+        supabase.table("adjustments")
+        .select("covering_teacher_id")
+        .eq("date", date.isoformat())
+        .eq("period_number", period)
+        .execute()
+    )
+    busy_teacher_ids.update(
+        row["covering_teacher_id"]
+        for row in (covering_teachers.data or [])
+        if row.get("covering_teacher_id")
+    )
     free_teacher_list = [
         teacher for teacher in all_teachers.data if teacher["id"] not in busy_teacher_ids
     ]
