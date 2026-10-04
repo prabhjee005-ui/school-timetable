@@ -1,36 +1,33 @@
 import { useState, useEffect } from 'react';
 import api from '../api';
+import { DEFAULT_OPERATING_DAYS, getDefaultOperatingDay } from '../utils/schoolSchedule';
 
-const TEACHER_DIRECTORY = {
-  "T01": "Mr. Rajesh Kumar",
-  "T02": "Ms. Priya Sharma",
-  "T03": "Mr. Amit Singh",
-  "T04": "Ms. Sunita Verma",
-  "T05": "Mr. Vikram Mehta",
-  "T06": "Ms. Anjali Gupta",
-  "T07": "Mr. Rohit Bhatia",
-  "T08": "Ms. Kavita Nair",
-  "T09": "Sunita Rao",
-  "T10": "Deepak Nair"
-};
-
-export default function SwapRequest() {
+export default function SwapRequest({ operatingDays = DEFAULT_OPERATING_DAYS }) {
   const [myTeacherId, setMyTeacherId] = useState('');
   const [isValidId, setIsValidId] = useState(false);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [checkingId, setCheckingId] = useState(false);
+  const [teacherDirectory, setTeacherDirectory] = useState({});
   
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const today = 'Monday'; // DEV: hardcoded day for testing
-
+  const days = operatingDays;
   const [formData, setFormData] = useState({
     requester_period: 1,
-    requester_day: days.includes(today) ? today : 'Monday',
+    requester_day: getDefaultOperatingDay(days),
     target_teacher_id: '',
     target_period: '',
     target_day: ''
   });
+
+  useEffect(() => {
+    setFormData(prev => ({ ...prev, requester_day: getDefaultOperatingDay(days) }));
+  }, [days]);
+
+  useEffect(() => {
+    api.get('/teachers')
+      .then(res => setTeacherDirectory(Object.fromEntries((res.data.teachers || []).map(t => [t.id, t.name]))))
+      .catch(err => console.error('Failed to load staff directory:', err));
+  }, []);
 
   const fetchRequests = async () => {
     if (!isValidId) return;
@@ -94,7 +91,7 @@ export default function SwapRequest() {
       await api.post('/swap-requests/', payload);
       setFormData({
         requester_period: 1,
-        requester_day: days.includes(today) ? today : 'Monday',
+        requester_day: getDefaultOperatingDay(days),
         target_teacher_id: '',
         target_period: '',
         target_day: ''
@@ -153,7 +150,7 @@ export default function SwapRequest() {
             type="text"
             value={myTeacherId}
             onChange={(e) => { setMyTeacherId(e.target.value); setIsValidId(false); }}
-            placeholder="Enter Teacher ID (e.g. T01)"
+            placeholder="Enter Staff Code (e.g. T001)"
             className="flex-1 bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 text-slate-100 outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all font-mono"
             disabled={isValidId}
           />
@@ -214,18 +211,14 @@ export default function SwapRequest() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-xs font-medium text-slate-400 mb-1">Target Teacher ID</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. T05"
+                      <select
                         value={formData.target_teacher_id}
-                        onChange={(e) => setFormData({...formData, target_teacher_id: e.target.value.toUpperCase()})}
+                        onChange={(e) => setFormData({...formData, target_teacher_id: e.target.value})}
                         className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-2.5 text-slate-200 outline-none focus:border-indigo-500 transition-colors font-mono"
-                      />
-                      {formData.target_teacher_id && TEACHER_DIRECTORY[formData.target_teacher_id] && (
-                        <p className="mt-1 text-xs text-indigo-400 font-medium ml-1">
-                          {TEACHER_DIRECTORY[formData.target_teacher_id]}
-                        </p>
-                      )}
+                      >
+                        <option value="">Anyone</option>
+                        {Object.entries(teacherDirectory).map(([id, name]) => <option key={id} value={id}>{name} ({id})</option>)}
+                      </select>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
@@ -281,7 +274,7 @@ export default function SwapRequest() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="text-sm font-bold text-slate-200">
-                            {req.requester_id} - {TEACHER_DIRECTORY[req.requester_id] || 'Unknown'}
+                            {req.requester_id} - {teacherDirectory[req.requester_id] || 'Unknown'}
                           </p>
                           <p className="text-xs text-slate-400">P{req.requester_period} on {req.requester_day}</p>
                         </div>
@@ -335,7 +328,7 @@ export default function SwapRequest() {
                             <span className="text-slate-500">→</span>
                             <span className="text-slate-200">
                               {req.target_teacher_id 
-                                ? `${req.target_teacher_id} (${TEACHER_DIRECTORY[req.target_teacher_id] || 'Other'})` 
+                                ? `${req.target_teacher_id} (${teacherDirectory[req.target_teacher_id] || 'Other'})`
                                 : 'Anyone'}
                             </span>
                           </div>

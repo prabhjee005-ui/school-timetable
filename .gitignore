@@ -1,1 +1,4 @@
 .env
+data/allocation/
+__pycache__/
+*.pyc

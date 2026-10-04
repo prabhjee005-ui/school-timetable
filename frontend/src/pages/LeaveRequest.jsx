@@ -110,7 +110,7 @@ export default function LeaveRequest() {
               type="text"
               value={formData.teacher_name}
               onChange={handleChange}
-              placeholder="e.g. Mr. Rajesh Kumar"
+              placeholder="Enter your name"
               className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500"
             />
           </div>
@@ -125,7 +125,7 @@ export default function LeaveRequest() {
                 value={formData.teacher_id}
                 onChange={handleChange}
                 onBlur={handleTeacherIdBlur}
-                placeholder="e.g. T01"
+                placeholder="e.g. T001"
                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 pr-8 text-sm text-slate-200 outline-none focus:border-indigo-500"
               />
               {teacherIdValid && !teacherIdChecking && (
@@ -201,4 +201,3 @@ export default function LeaveRequest() {
     </div>
   );
 }
-

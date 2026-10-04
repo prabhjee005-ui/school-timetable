@@ -45,7 +45,7 @@ export default function TimetableTable({ day, period }) {
       
       <div className="px-6 py-4 border-b border-slate-700/50 bg-slate-900/40">
         <div className="flex flex-wrap gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((p) => (
             <button
               key={p}
               onClick={() => setLocalPeriod(p)}

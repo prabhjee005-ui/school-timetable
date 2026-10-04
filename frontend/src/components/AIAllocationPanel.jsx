@@ -1,18 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Bot, Sparkles, Check, AlertCircle, Loader2, FileDown } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import api from '../api';
+import { DEFAULT_OPERATING_DAYS, getDefaultOperatingDay, getLocalDateString } from '../utils/schoolSchedule';
 
-export default function AIAllocationPanel({ onAdjustmentCreated }) {
-  const [formData, setFormData] = useState({
-    day: 'Monday',
-    date: '2026-04-06', // DEV: hardcoded day for testing
-    period_number: 1,
-    class_name: '',
-    subject: '',
-    room: '',
-    original_teacher_id: ''
+export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays = DEFAULT_OPERATING_DAYS }) {
+  const [formData, setFormData] = useState(() => {
+    const today = new Date();
+    return {
+      day: getDefaultOperatingDay(operatingDays, today),
+      date: getLocalDateString(today),
+      period_number: 1,
+      class_name: '',
+      subject: '',
+      room: '',
+      original_teacher_id: ''
+    };
   });
 
   const [loading, setLoading] = useState(false);
@@ -21,8 +25,24 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      day: getDefaultOperatingDay(operatingDays, new Date(`${prev.date}T12:00:00`)),
+    }));
+  }, [operatingDays]);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'date') {
+      const selectedDate = new Date(`${value}T12:00:00`);
+      setFormData(prev => ({
+        ...prev,
+        date: value,
+        day: getDefaultOperatingDay(operatingDays, selectedDate),
+      }));
+      return;
+    }
     let finalValue = value;
     if (name === 'period_number') finalValue = parseInt(value);
     else if (name === 'original_teacher_id') finalValue = value.trim();
@@ -102,18 +122,13 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
       doc.setTextColor(100);
       doc.text(`Date: ${formattedDate} (${formData.day})`, 14, 22);
 
-      // Define columns: Absent Teacher, Period 1-4, RECESS, Period 5-8
+      // Recess is a lunch break and is not a teaching period.
       const columns = [
         { header: 'Absent Teacher', dataKey: 'absent' },
-        { header: 'Period 1', dataKey: 'p1' },
-        { header: 'Period 2', dataKey: 'p2' },
-        { header: 'Period 3', dataKey: 'p3' },
-        { header: 'Period 4', dataKey: 'p4' },
-        { header: 'RECESS', dataKey: 'recess' },
-        { header: 'Period 5', dataKey: 'p5' },
-        { header: 'Period 6', dataKey: 'p6' },
-        { header: 'Period 7', dataKey: 'p7' },
-        { header: 'Period 8', dataKey: 'p8' },
+        ...Array.from({ length: 9 }, (_, index) => ({
+          header: `Period ${index + 1}`,
+          dataKey: `p${index + 1}`
+        }))
       ];
 
       // Group adjustments by original_teacher_id (absent teacher)
@@ -121,10 +136,8 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
       adjustments.forEach(adj => {
         const tid = adj.original_teacher_id;
         if (!rowsMap[tid]) {
-          rowsMap[tid] = { 
-            absent: teacherMap[tid] || tid, 
-            p1: '', p2: '', p3: '', p4: '', recess: 'RECESS', p5: '', p6: '', p7: '', p8: '' 
-          };
+          rowsMap[tid] = { absent: teacherMap[tid] || tid };
+          for (let period = 1; period <= 9; period += 1) rowsMap[tid][`p${period}`] = '';
         }
         
         const periodKey = `p${adj.period_number}`;
@@ -210,16 +223,16 @@ export default function AIAllocationPanel({ onAdjustmentCreated }) {
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Day of Week</label>
               <select name="day" value={formData.day} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500">
-                {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'].map(d => <option key={d} value={d}>{d}</option>)}
+                {operatingDays.map(d => <option key={d} value={d}>{d}</option>)}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1">Period (1-8)</label>
-              <input type="number" name="period_number" min="1" max="8" required value={formData.period_number} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
+              <label className="block text-xs font-medium text-slate-400 mb-1">Period (1-9)</label>
+              <input type="number" name="period_number" min="1" max="9" required value={formData.period_number} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Original Teacher ID</label>
-              <input type="text" name="original_teacher_id" required placeholder="e.g. T01" value={formData.original_teacher_id} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
+              <input type="text" name="original_teacher_id" required placeholder="e.g. T001" value={formData.original_teacher_id} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Class</label>

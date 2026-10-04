@@ -4,3 +4,4 @@ supabase
 python-dotenv
 groq
 httpx
+requests>=2.32,<3
