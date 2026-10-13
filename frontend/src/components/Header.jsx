@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { CalendarDays, Clock, LogOut, User } from 'lucide-react';
+import { CalendarDays, Clock, LogOut, MessageCircle, User } from 'lucide-react';
 
 export default function Header() {
   const [time, setTime] = useState(new Date());
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -32,6 +33,17 @@ export default function Header() {
           </div>
 
           <div className="flex items-center gap-4">
+            {location.pathname !== '/chat' && (
+              <button
+                type="button"
+                onClick={() => navigate('/chat')}
+                aria-label="Open staff chat"
+                title="Staff chat"
+                className="relative rounded-full border border-slate-700/70 bg-slate-900/50 p-2.5 text-slate-300 transition-colors hover:border-indigo-400/50 hover:bg-indigo-500/10 hover:text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              >
+                <MessageCircle className="h-5 w-5" />
+              </button>
+            )}
             <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-900/50 border border-slate-700/50 text-slate-300">
               <Clock className="h-4 w-4" />
               <span className="font-medium font-mono text-sm tracking-wide">
@@ -39,7 +51,7 @@ export default function Header() {
               </span>
             </div>
 
-            {user && (
+            {user && location.pathname !== '/chat' && (
               <div className="flex items-center gap-3 pl-4 border-l border-slate-700/50">
                 <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
                   <User className="h-4 w-4 text-indigo-400" />
@@ -62,4 +74,3 @@ export default function Header() {
     </header>
   );
 }
-

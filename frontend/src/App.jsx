@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
+import { lazy, Suspense, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
 import api from './api';
 import Header from './components/Header';
 import LoginPage from './components/LoginPage';
@@ -13,6 +12,7 @@ import PrincipalView from './pages/PrincipalView';
 import AttendanceDashboard from './pages/AttendanceDashboard';
 import SwapRequest from './pages/SwapRequest';
 import AdminDashboard from './pages/AdminDashboard';
+const StaffChat = lazy(() => import('./pages/StaffChat'));
 import { DEFAULT_OPERATING_DAYS, getLocalDayName, getOperatingDays } from './utils/schoolSchedule';
 import './App.css';
 
@@ -120,6 +120,7 @@ function App() {
                 <Route path="/" element={<HomeContent operatingDays={operatingDays} />} />
                 <Route path="/leave" element={<LeaveRequest />} />
                 <Route path="/swap" element={<SwapRequest operatingDays={operatingDays} />} />
+                <Route path="/chat" element={<Suspense fallback={<div className="py-12 text-center text-slate-400">Loading staff chat…</div>}><StaffChat /></Suspense>} />
                 <Route path="/principal" element={<PrincipalViewWithNav />} />
                 <Route path="/attendance" element={<AttendanceDashboardWithNav />} />
               </Routes>
