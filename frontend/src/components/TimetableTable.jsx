@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, MapPin, Users, Loader2 } from 'lucide-react';
+import { BookOpen, Users, Loader2 } from 'lucide-react';
 import api from '../api';
 
 export default function TimetableTable({ day, period }) {
@@ -45,7 +45,7 @@ export default function TimetableTable({ day, period }) {
       
       <div className="px-6 py-4 border-b border-slate-700/50 bg-slate-900/40">
         <div className="flex flex-wrap gap-2">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map((p) => (
+          {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((p) => (
             <button
               key={p}
               onClick={() => setLocalPeriod(p)}
@@ -69,13 +69,12 @@ export default function TimetableTable({ day, period }) {
               <th className="px-6 py-4 font-medium">SUBJECT</th>
               <th className="px-6 py-4 font-medium">TEACHER NAME</th>
               <th className="px-6 py-4 font-medium">TEACHER ID</th>
-              <th className="px-6 py-4 font-medium">ROOM</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {entries.length === 0 && !loading ? (
               <tr>
-                <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
+                <td colSpan="4" className="px-6 py-8 text-center text-slate-500">
                   No classes scheduled for this period.
                 </td>
               </tr>
@@ -106,12 +105,6 @@ export default function TimetableTable({ day, period }) {
                       <span className="text-slate-300 font-medium">
                         {entry.teacher_id ?? '-'}
                       </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-slate-400">
-                      <MapPin className="h-4 w-4 opacity-70" />
-                      <span>{entry.room}</span>
                     </div>
                   </td>
                 </tr>

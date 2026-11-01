@@ -35,8 +35,9 @@ export default function PrincipalView({ onOpenDashboard }) {
       await api.post(`/leave-requests/${id}/approve`);
       await fetchLeaveRequests();
       alert('Leave request approved! Cover teachers assigned.');
-    } catch {
-      alert('Something went wrong. Please try again.');
+    } catch (err) {
+      const detail = err?.response?.data?.detail;
+      alert(detail ? `Could not approve leave request: ${detail}` : 'Could not reach the server. Please try again.');
     } finally {
       setActionLoadingId(null);
     }

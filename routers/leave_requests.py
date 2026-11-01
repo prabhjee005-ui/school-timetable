@@ -270,10 +270,13 @@ def approve_leave(leave_id: str):
                     inserted_periods.add(period_number)
             for row in timetable_rows:
                 period_number = row["period_number"]
-                covering = find_covering_teacher(CoveringTeacherRequest(day=day_name, date=absence_date, period_number=period_number, class_name=row["class_name"], subject=row["subject"], room=row["room"], original_teacher_id=str(teacher_id)))
+                # Room is optional in the timetable (often blank for OPT periods).
+                # The allocation request models expect text, so normalize NULL here.
+                room = row.get("room") or ""
+                covering = find_covering_teacher(CoveringTeacherRequest(day=day_name, date=absence_date, period_number=period_number, class_name=row["class_name"], subject=row["subject"], room=room, original_teacher_id=str(teacher_id)))
                 assigned_teacher_id = covering["assigned_teacher_id"]
                 ai_reason = covering.get("reason") or ""
-                create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=row["room"], ai_reasoning=ai_reason))
+                create_adjustment(AdjustmentCreate(date=absence_date, period_number=period_number, class_name=row["class_name"], original_teacher_id=str(teacher_id), covering_teacher_id=str(assigned_teacher_id), subject=row["subject"], room=room, ai_reasoning=ai_reason))
                 cover_teacher = _get_teacher(supabase, str(assigned_teacher_id))
                 _notify_covering_teacher_assigned(
                     covering_teacher_name=cover_teacher.get("name") or str(assigned_teacher_id),
@@ -282,7 +285,7 @@ def approve_leave(leave_id: str):
                     period_number=period_number,
                     class_name=row["class_name"],
                     subject=row["subject"],
-                    room=row["room"],
+                    room=room,
                 )
 
         return {"message": "Leave request approved", "leave_request_id": leave_id}

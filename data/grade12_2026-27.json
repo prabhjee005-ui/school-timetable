@@ -1,0 +1,3368 @@
+[
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 6,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 7,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T064",
+    "subject": "SUPW",
+    "group_key": "T064",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T079",
+    "subject": "SUPW",
+    "group_key": "T079",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 6,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 7,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12G",
+    "teacher_id": "T087",
+    "subject": "SPORTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 6,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 7,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 6,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 7,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12G",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 6,
+    "class_name": "12G",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12G",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12G",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12G",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 6,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T095",
+    "subject": "SPORTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 6,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 6,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 6,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12D",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T039",
+    "subject": "Mark",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12D",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 6,
+    "class_name": "12D",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T076",
+    "subject": "Sales",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12D",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12D",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T064",
+    "subject": "SUPW",
+    "group_key": "T064",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12D",
+    "teacher_id": "T079",
+    "subject": "SUPW",
+    "group_key": "T079",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T064",
+    "subject": "SUPW",
+    "group_key": "T064",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T079",
+    "subject": "SUPW",
+    "group_key": "T079",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 6,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 6,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 6,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T095",
+    "subject": "SPORTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 6,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T068",
+    "subject": "Fr Off",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12E",
+    "teacher_id": "T070",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 6,
+    "class_name": "12E",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T039",
+    "subject": "Tour",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12E",
+    "teacher_id": "T071",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12E",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12E",
+    "teacher_id": "T074",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 6,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 7,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 6,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 7,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 6,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 7,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T095",
+    "subject": "SPORTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T064",
+    "subject": "SUPW",
+    "group_key": "T064",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T079",
+    "subject": "SUPW",
+    "group_key": "T079",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 6,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 7,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T051",
+    "subject": "BIOLOGY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T072",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12B",
+    "teacher_id": "T035",
+    "subject": "Psy",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T059",
+    "subject": "PHYSICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12B",
+    "teacher_id": "T023",
+    "subject": "Pol Sc",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 6,
+    "class_name": "12B",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12B",
+    "teacher_id": "T002",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T056",
+    "subject": "CHEMISTRY",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12B",
+    "teacher_id": "T024",
+    "subject": "Hist",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 2,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 3,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 6,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 7,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 8,
+    "class_name": "12H",
+    "teacher_id": "T095",
+    "subject": "SPORTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 9,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T064",
+    "subject": "SUPW",
+    "group_key": "T064",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T079",
+    "subject": "SUPW",
+    "group_key": "T079",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 2,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 3,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 6,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 7,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 8,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 9,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 2,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 3,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 4,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 5,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 6,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 7,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 8,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Wednesday",
+    "period_number": 9,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 2,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 3,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 6,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 7,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 8,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 9,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 1,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 2,
+    "class_name": "12H",
+    "teacher_id": "T001",
+    "subject": "ENGLISH",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 3,
+    "class_name": "12H",
+    "teacher_id": "T073",
+    "subject": "ECONOMICS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "OPT",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 6,
+    "class_name": "12H",
+    "teacher_id": null,
+    "subject": "RECESS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 7,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 8,
+    "class_name": "12H",
+    "teacher_id": "T068",
+    "subject": "ACCOUNTS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 9,
+    "class_name": "12H",
+    "teacher_id": "T075",
+    "subject": "BUSINESS STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Friday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Monday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Thursday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 4,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T066",
+    "subject": "AI",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T052",
+    "subject": "Biotech",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T064",
+    "subject": "CS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T063",
+    "subject": "FS",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T065",
+    "subject": "IP",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T040",
+    "subject": "LEGAL STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T041",
+    "subject": "MATHS",
+    "group_key": "T041",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T043",
+    "subject": "MATHS",
+    "group_key": "T043",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T069",
+    "subject": "MEDIA STUDIES",
+    "group_key": "",
+    "room": null
+  },
+  {
+    "day": "Tuesday",
+    "period_number": 5,
+    "class_name": "OPT12",
+    "teacher_id": "T079",
+    "subject": "Painting",
+    "group_key": "",
+    "room": null
+  }
+]

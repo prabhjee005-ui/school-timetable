@@ -14,7 +14,7 @@ router = APIRouter(tags=["AI Allocation"])
 class CoveringTeacherRequest(BaseModel):
     day: str
     date: str = Field(..., description="Date in YYYY-MM-DD format")
-    period_number: int = Field(..., ge=1, le=8)
+    period_number: int = Field(..., ge=1, le=9)
     class_name: str
     subject: str
     room: str
@@ -23,7 +23,7 @@ class CoveringTeacherRequest(BaseModel):
 
 class AdjustmentCreate(BaseModel):
     date: str = Field(..., description="Date in YYYY-MM-DD format")
-    period_number: int = Field(..., ge=1, le=8)
+    period_number: int = Field(..., ge=1, le=9)
     class_name: str
     original_teacher_id: str
     covering_teacher_id: str
@@ -128,6 +128,21 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
 
     free_teacher_ids = [t["id"] for t in free_teachers]
     teacher_tiers: dict[str, set[str]] = {}
+    staff_rows = supabase.table("staff").select("id,staff_code").execute().data or []
+    staff_codes = {row["id"]: row["staff_code"] for row in staff_rows}
+    assignment_rows = supabase.table("assignments").select("staff_id,sections").execute().data or []
+    for row in assignment_rows:
+        teacher_code = staff_codes.get(row.get("staff_id"))
+        if not teacher_code:
+            continue
+        tier_set = teacher_tiers.setdefault(str(teacher_code), set())
+        for section in row.get("sections") or []:
+            class_number = _parse_class_number(section)
+            tier = _tier_for_class_number(class_number) if class_number is not None else None
+            if tier:
+                tier_set.add(tier)
+
+    # Existing timetable assignments can contribute tiers as the timetable is rebuilt.
     if free_teacher_ids:
         teacher_class_rows = (
             supabase.table("timetable")
@@ -137,14 +152,10 @@ def find_covering_teacher(payload: CoveringTeacherRequest):
         )
         for row in (teacher_class_rows.data or []):
             t_id = row.get("teacher_id")
-            if not t_id:
-                continue
-            tier_set = teacher_tiers.setdefault(str(t_id), set())
-            class_name = row.get("class_name")
-            class_number = _parse_class_number(class_name)
+            class_number = _parse_class_number(row.get("class_name"))
             tier = _tier_for_class_number(class_number) if class_number is not None else None
-            if tier:
-                tier_set.add(tier)
+            if t_id and tier:
+                teacher_tiers.setdefault(str(t_id), set()).add(tier)
 
     tier_eligible_teachers = [
         t for t in free_teachers if target_tier in teacher_tiers.get(str(t["id"]), set())

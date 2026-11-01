@@ -6,6 +6,12 @@ import api from '../api';
 import { DEFAULT_OPERATING_DAYS, getDefaultOperatingDay, getLocalDateString } from '../utils/schoolSchedule';
 
 export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays = DEFAULT_OPERATING_DAYS }) {
+  const [teachers, setTeachers] = useState([]);
+  const [teachersLoading, setTeachersLoading] = useState(true);
+  const [teachersError, setTeachersError] = useState('');
+  const [teacherQuery, setTeacherQuery] = useState('');
+  const [teacherDropdownOpen, setTeacherDropdownOpen] = useState(false);
+  const [activeTeacherIndex, setActiveTeacherIndex] = useState(-1);
   const [formData, setFormData] = useState(() => {
     const today = new Date();
     return {
@@ -14,7 +20,6 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
       period_number: 1,
       class_name: '',
       subject: '',
-      room: '',
       original_teacher_id: ''
     };
   });
@@ -31,6 +36,21 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
       day: getDefaultOperatingDay(operatingDays, new Date(`${prev.date}T12:00:00`)),
     }));
   }, [operatingDays]);
+
+  useEffect(() => {
+    let active = true;
+    api.get('/teachers')
+      .then(response => {
+        if (active) setTeachers(response.data.teachers || []);
+      })
+      .catch(() => {
+        if (active) setTeachersError('Could not load the teacher list.');
+      })
+      .finally(() => {
+        if (active) setTeachersLoading(false);
+      });
+    return () => { active = false; };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,13 +72,17 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
 
   const handleFindCover = async (e) => {
     e.preventDefault();
+    if (!formData.original_teacher_id) {
+      setError('Choose an absent teacher from the suggestions.');
+      return;
+    }
     setLoading(true);
     setError(null);
     setResult(null);
     setSuccess(false);
 
     try {
-      const response = await api.post('/find-covering-teacher', formData);
+      const response = await api.post('/find-covering-teacher', { ...formData, room: '' });
       setResult(response.data);
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to find covering teacher.");
@@ -78,7 +102,7 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
         original_teacher_id: formData.original_teacher_id,
         covering_teacher_id: result.assigned_teacher_id,
         subject: formData.subject,
-        room: formData.room,
+        room: '',
         ai_reasoning: result.reason
       });
       setSuccess(true);
@@ -122,18 +146,13 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
       doc.setTextColor(100);
       doc.text(`Date: ${formattedDate} (${formData.day})`, 14, 22);
 
-      // Define columns: Absent Teacher, Period 1-4, RECESS, Period 5-8
+      // Recess is a lunch break and is not a teaching period.
       const columns = [
         { header: 'Absent Teacher', dataKey: 'absent' },
-        { header: 'Period 1', dataKey: 'p1' },
-        { header: 'Period 2', dataKey: 'p2' },
-        { header: 'Period 3', dataKey: 'p3' },
-        { header: 'Period 4', dataKey: 'p4' },
-        { header: 'RECESS', dataKey: 'recess' },
-        { header: 'Period 5', dataKey: 'p5' },
-        { header: 'Period 6', dataKey: 'p6' },
-        { header: 'Period 7', dataKey: 'p7' },
-        { header: 'Period 8', dataKey: 'p8' },
+        ...Array.from({ length: 9 }, (_, index) => ({
+          header: `Period ${index + 1}`,
+          dataKey: `p${index + 1}`
+        }))
       ];
 
       // Group adjustments by original_teacher_id (absent teacher)
@@ -141,10 +160,8 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
       adjustments.forEach(adj => {
         const tid = adj.original_teacher_id;
         if (!rowsMap[tid]) {
-          rowsMap[tid] = { 
-            absent: teacherMap[tid] || tid, 
-            p1: '', p2: '', p3: '', p4: '', recess: 'RECESS', p5: '', p6: '', p7: '', p8: '' 
-          };
+          rowsMap[tid] = { absent: teacherMap[tid] || tid };
+          for (let period = 1; period <= 9; period += 1) rowsMap[tid][`p${period}`] = '';
         }
         
         const periodKey = `p${adj.period_number}`;
@@ -199,15 +216,49 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
     }
   };
 
+  const assignedTeacherName = result?.eligible_teachers?.find(
+    teacher => teacher.id === result.assigned_teacher_id,
+  )?.name || result?.assigned_teacher_id;
+  const matchingTeachers = teachers.filter(teacher =>
+    teacher.name.toLowerCase().includes(teacherQuery.trim().toLowerCase()),
+  );
+
+  const chooseAbsentTeacher = (teacher) => {
+    setTeacherQuery(teacher.name);
+    setFormData(prev => ({ ...prev, original_teacher_id: teacher.id }));
+    setTeacherDropdownOpen(false);
+    setActiveTeacherIndex(-1);
+    setResult(null);
+    setError(null);
+    setSuccess(false);
+  };
+
+  const handleTeacherKeyDown = (event) => {
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setTeacherDropdownOpen(true);
+      setActiveTeacherIndex(index => Math.min(index + 1, matchingTeachers.length - 1));
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setActiveTeacherIndex(index => Math.max(index - 1, 0));
+    } else if (event.key === 'Enter' && teacherDropdownOpen && activeTeacherIndex >= 0) {
+      event.preventDefault();
+      const teacher = matchingTeachers[activeTeacherIndex];
+      if (teacher) chooseAbsentTeacher(teacher);
+    } else if (event.key === 'Escape') {
+      setTeacherDropdownOpen(false);
+    }
+  };
+
   return (
     <div className="bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-2xl shadow-xl overflow-hidden flex flex-col">
       <div className="p-6 border-b border-slate-700/50 bg-slate-900/20 flex justify-between items-center">
         <div>
           <h3 className="text-lg font-semibold text-slate-100 flex items-center gap-2">
             <Bot className="h-5 w-5 text-indigo-400" />
-            AI Teacher Allocation
+            One-off Cover Assignment
           </h3>
-          <p className="text-sm text-slate-400 mt-1">Find the best covering teacher automatically.</p>
+          <p className="text-sm text-slate-400 mt-1">Find cover for an unexpected absence or a single period. Approved leave requests are assigned automatically.</p>
         </div>
         <button
           onClick={handleExportPDF}
@@ -234,12 +285,58 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1">Period (1-8)</label>
-              <input type="number" name="period_number" min="1" max="8" required value={formData.period_number} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
+              <label className="block text-xs font-medium text-slate-400 mb-1">Period (1-9)</label>
+              <input type="number" name="period_number" min="1" max="9" required value={formData.period_number} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-400 mb-1">Original Teacher ID</label>
-              <input type="text" name="original_teacher_id" required placeholder="e.g. T01" value={formData.original_teacher_id} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
+              <label className="block text-xs font-medium text-slate-400 mb-1">Absent Teacher</label>
+              <div className="relative">
+                <input
+                  type="text"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-expanded={teacherDropdownOpen}
+                  aria-controls="absent-teacher-options"
+                  aria-activedescendant={teacherDropdownOpen && matchingTeachers[activeTeacherIndex] ? `absent-teacher-option-${matchingTeachers[activeTeacherIndex].id}` : undefined}
+                  value={teacherQuery}
+                  disabled={teachersLoading || teachers.length === 0}
+                  onFocus={() => setTeacherDropdownOpen(true)}
+                  onBlur={() => setTimeout(() => setTeacherDropdownOpen(false), 120)}
+                  onChange={event => {
+                    setTeacherQuery(event.target.value);
+                    setTeacherDropdownOpen(true);
+                    setActiveTeacherIndex(0);
+                    setFormData(prev => ({ ...prev, original_teacher_id: '' }));
+                    setResult(null);
+                    setError(null);
+                    setSuccess(false);
+                  }}
+                  onKeyDown={handleTeacherKeyDown}
+                  placeholder={teachersLoading ? 'Loading teachers…' : 'Start typing a name'}
+                  className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500 disabled:opacity-60"
+                />
+                {teacherDropdownOpen && !teachersLoading && teachers.length > 0 && (
+                  <div id="absent-teacher-options" role="listbox" className="absolute z-30 mt-1 max-h-56 w-full overflow-y-auto rounded-lg border border-slate-700 bg-slate-900 py-1 shadow-xl">
+                    {matchingTeachers.length ? matchingTeachers.map((teacher, index) => (
+                      <button
+                        key={teacher.id}
+                        id={`absent-teacher-option-${teacher.id}`}
+                        type="button"
+                        role="option"
+                        aria-selected={index === activeTeacherIndex}
+                        onMouseDown={event => event.preventDefault()}
+                        onClick={() => chooseAbsentTeacher(teacher)}
+                        className={`w-full px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800 ${index === activeTeacherIndex ? 'bg-slate-800' : ''}`}
+                      >
+                        {teacher.name}
+                      </button>
+                    )) : (
+                      <p className="px-3 py-2 text-sm text-slate-400">No teachers match that name.</p>
+                    )}
+                  </div>
+                )}
+              </div>
+              {teachersError && <p className="mt-1 text-xs text-red-300">{teachersError}</p>}
             </div>
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Class</label>
@@ -248,10 +345,6 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
             <div>
               <label className="block text-xs font-medium text-slate-400 mb-1">Subject</label>
               <input type="text" name="subject" required placeholder="e.g. Physics" value={formData.subject} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
-            </div>
-            <div className="col-span-2">
-              <label className="block text-xs font-medium text-slate-400 mb-1">Room</label>
-              <input type="text" name="room" required placeholder="e.g. Room 101" value={formData.room} onChange={handleInputChange} className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-indigo-500" />
             </div>
           </div>
           
@@ -278,7 +371,7 @@ export default function AIAllocationPanel({ onAdjustmentCreated, operatingDays =
                 <Sparkles className="h-4 w-4" /> AI Suggestion
               </h4>
               <div className="text-2xl font-bold text-slate-100 flex items-center gap-3 mb-4">
-                Assign Teacher <span className="bg-indigo-500 text-white px-3 py-1 rounded-lg shadow-inner">{result.assigned_teacher_id}</span>
+                Assign Teacher <span className="bg-indigo-500 text-white px-3 py-1 rounded-lg shadow-inner">{assignedTeacherName}</span>
               </div>
               <p className="text-sm text-slate-300 leading-relaxed max-w-[85%]">{result.reason}</p>
               

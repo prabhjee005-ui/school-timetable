@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CalendarRange, MapPin, Users, Loader2, Trash2 } from 'lucide-react';
+import { CalendarRange, Users, Loader2, Trash2 } from 'lucide-react';
 import api from '../api';
 import { getLocalDateString } from '../utils/schoolSchedule';
 
@@ -59,14 +59,13 @@ export default function AdjustmentsTable({ refreshTrigger }) {
               <th className="px-6 py-4 font-medium">Subject</th>
               <th className="px-6 py-4 font-medium">Covering Teacher</th>
               <th className="px-6 py-4 font-medium">AI Reasoning</th>
-              <th className="px-6 py-4 font-medium">Room</th>
               <th className="px-6 py-4 font-medium text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-700/50">
             {entries.length === 0 && !loading ? (
               <tr>
-                <td colSpan="6" className="px-6 py-8 text-center text-slate-500">
+                <td colSpan="5" className="px-6 py-8 text-center text-slate-500">
                   No adjustments require cover today.
                 </td>
               </tr>
@@ -97,12 +96,6 @@ export default function AdjustmentsTable({ refreshTrigger }) {
                   <td className="px-6 py-4">
                     <div className="text-sm text-slate-300 line-clamp-2 max-w-[250px]" title={entry.ai_reasoning}>
                       {entry.ai_reasoning}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center gap-2 text-slate-400">
-                      <MapPin className="h-4 w-4 opacity-70 text-slate-500" />
-                      <span>{entry.room}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right">
